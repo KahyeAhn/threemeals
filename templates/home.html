@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}home.html{% endblock %}
+
+{% load staticfiles %}
+{% block extrastyle %}{% static "css/home.css" %}{% endblock %}
+
+{% block content %}
+
+<div id="content_home">
+    <div id="homeimg">
+        <a href="/"><img src="{% static 'img/freezer.jpg' %}" style="height:285px;"/></a>
+
+    </div>
+</div>
+{% endblock content %}

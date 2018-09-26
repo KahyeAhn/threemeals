@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% block extrastyle %}{% static "css/forms.css" %}{% endblock %}
+
+{% block content %}
+<div id="content">
+
+    <h1>로그인</h1>
+
+    <form action="." method="post">{% csrf_token %}
+    {% if form.errors %}
+        <p class="errornote">다시 시도해주시길 바랍니다.</p>
+    {% endif %}
+
+        <p>아이디와 비밀번호를 입력해주시길 바랍니다.</p>
+
+        <fieldset class="aligned">
+
+            <div class="form-row">
+                {{ form.username.label_tag }}{{ form.username }}
+            </div>
+
+            <div class="form-row">
+                {{ form.password.label_tag }}{{ form.password }}
+            </div>
+        </fieldset>
+
+        <div class="submit-row">
+            <input type="submit" value="Log in"/>
+            <input type="hidden" name="next" value="{{ next }}"/>
+        </div>
+
+        <script type="text/javascript">document.getElementById('id_username').focus()
+        </script>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+body{
+    font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 12px;
+}
+
+div#header{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 30px;
+    width:100%;
+    display: table;
+    background: orange;
+}
+
+
+div#content{
+    position: absolute;
+    top:70px;
+    left:50px;
+    right:50px;
+}
+
+.maintitle{
+    display: table-cell;
+    vertical-align: middle;
+    padding-left:20px;
+    color: #ffc;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.welcome {
+    display:table-cell;
+    vertical-align: middle;
+    text-align: right;
+    padding-right: 20px;
+    color: #ffc;
+    font-weight: normal;
+    font-size: 12px;
+}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}register_done.html{% endblock %}
+
+{% block content %}
+<div id="content">
+    <h1>정상적으로 회원가입되었습니다.</h1>
+
+    <p>회원가입해주셔서 감사합니다.</p>
+
+    <p><a href="{% url 'login' %}">다시 로그인하기</a></p>
+</div>
+{% endblock %}
