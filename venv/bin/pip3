@@ -1,4 +1,4 @@
-#!/Users/kahye/Desktop/pyDjango/freezer/venv/bin/python
+#!/Users/kahye/Desktop/pyDjango/threemeals/venv/bin/python
 # EASY-INSTALL-ENTRY-SCRIPT: 'pip==10.0.1','console_scripts','pip3'
 __requires__ = 'pip==10.0.1'
 import re
