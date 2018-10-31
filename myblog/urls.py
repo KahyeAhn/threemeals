@@ -21,11 +21,14 @@ from django.conf import settings
 from myblog.views import HomeView
 from myblog.views import UserCreateView, UserCreateDoneTV
 
+
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^mealpref/', include('mealpref.urls', namespace='mealpref')),
 
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^accounts/register/$', UserCreateView.as_view(), name='register'),
     url(r'^accounts/register/done/$', UserCreateDoneTV.as_view(), name='register_done'),
+
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

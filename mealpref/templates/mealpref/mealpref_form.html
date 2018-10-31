@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
+{% extends "base.html" %}
+
+{% block title %}mealpref_change_list.html{% endblock %}
+
+{% block content %}
 <body>
-$END$
-</body>
-</html>
+    <div>
+        <h1>Meal preference -{{user}}</h1>
+
+        <form action="." method="post">{% csrf_token %}
+            {% if form.errors %}
+            <p>Wrong! Please correct the errors</p>
+            {% endif %}
+
+            <div>아침
+                {{ form.morning }}
+            </div>
+            <div>점심
+                {{ form.lunch }}
+            </div>
+            <div>저녁
+                {{ form.dinner }}
+            </div>
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+{% endblock %}
