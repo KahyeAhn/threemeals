@@ -7,3 +7,4 @@ class MealAdmin(admin.ModelAdmin):
     list_display=('pref_user','morning', 'lunch', 'dinner')
 
 admin.site.register(MealPref)
+
