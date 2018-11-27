@@ -1,0 +1,21 @@
+div#frozen{
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+    float:left;
+    width:50%;
+}
+
+div#cold{
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+    float:right;
+    width:49%;
+}
+
+div#warm{
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+}

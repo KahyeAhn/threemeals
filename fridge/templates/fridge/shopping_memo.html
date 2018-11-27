@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}shopping_memo.html{% endblock %}
+
+{% load staticfiles %}
+{% block extrastyle %}{% static "fridge/shopping_memo.css" %}{% endblock %}
+
+{% block content %}
+<div id="content">
+    <p>
+        <h4>장보기메모</h4>
+        <span>장볼 재료들의 리스트를 확인하세요</span>
+    </p>
+    <table>
+        <tr>
+            <td>과일/채소</td>
+        </tr>
+        <tr>
+            <td>수산물</td>
+        </tr>
+        <tr>
+            <td>양념/소스</td>
+        </tr>
+    </table>
+</div>
+{% endblock %}

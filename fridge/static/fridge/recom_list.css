@@ -1,0 +1,11 @@
+div#recipe_recom{
+    background: rgba(225,225,225, .8)
+    background-color:black;
+    float:left;
+    width:50%;
+}
+
+div#my_fridge{
+    float:right;
+    width:50%;
+}

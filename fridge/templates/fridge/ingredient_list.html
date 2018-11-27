@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}ingredient_list.html{% endblock %}
+
+{% load staticfiles %}
+{% block extrastyle %}{% static "fridge/ingredient_list.css" %}{% endblock %}
+
+{% block content %}
+<div id="content">
+    <div id="frozen">
+        <p>냉동</p>
+    </div>
+    <div id="cold">
+        <p>냉장</p>
+    </div>
+    <div id="warm">
+        <p>실온</p>
+    </div>
+    <div>
+        <p>채워넣기</p>
+        {% if object_list %}
+        <ul>
+            {% for ingredient in object_list %}
+            <li>{{ ingredient.ingredientName }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
