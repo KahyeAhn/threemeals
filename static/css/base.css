@@ -13,6 +13,18 @@ div#header{
     background: orange;
 }
 
+div#menu{
+    position: absolute;
+    top:30px;
+    left:0px;
+    height:30px;
+    width: 100%;
+    display: table;
+    table-layout:fixed;
+    border-spacing: 40px 0px;
+    background: orange;
+    font-size: 15px;
+}
 
 div#content{
     position: absolute;
@@ -38,4 +50,29 @@ div#content{
     color: #ffc;
     font-weight: normal;
     font-size: 12px;
+}
+
+div#menu a:link, div#menu a:visited {
+    color: white;
+}
+
+div#menu >li {
+    display: table-cell;
+    vertical-align: middle;
+    border: 2px solid white;
+    border-radius: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td, th{
+    line-height: 18px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    padding: 5px 15px;
+    font-family: "Lucida Grande", Verdana, Arial, sans-serif;
 }

@@ -11,16 +11,5 @@
     <div id="homeimg">
         <a href="/"><img src="{% static 'img/freezer.jpg' %}" style="height:285px;"/></a>
     </div>
-    <hr style="margin: 5px 0;">
-    <h2>Select Application</h2>
-
-    <table id="applist">
-        <tr>
-            <td><b><i><a href="{% url 'mealpref:add' %}">My 식습관</a></i></b></td>
-        </tr>
-         <tr>
-            <td><b><i><a href="{% url 'fridge:show' %}">My 냉장고</a></i></b></td>
-        </tr>
-    </table>
 </div>
 {% endblock content %}

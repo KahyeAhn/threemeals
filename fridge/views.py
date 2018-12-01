@@ -8,11 +8,20 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
 from myblog.views import LoginRequiredMixin
 
-# from mealpref.models import MealPref
-#
-# class PrefHomeView(TemplateView):
-#     template_name = 'fridge/fridge_home.html'
-#
+from fridge.models import Ingredient
+
+class FridgeHomeView(TemplateView):
+    template_name = 'fridge/recom_list.html'
+
+class IngredientHomeView(TemplateView):
+    template_name = 'fridge/ingredient_list.html'
+
+class ScrapHomeView(TemplateView):
+    template_name = 'fridge/scrap_list.html'
+
+class ShoppingHomeView(TemplateView):
+    template_name = 'fridge/shopping_memo.html'
+
 # class MealCreateView(LoginRequiredMixin, CreateView):
 #     model = MealPref
 #     fields = ['morning', 'lunch', 'dinner']
