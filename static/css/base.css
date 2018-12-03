@@ -60,9 +60,10 @@ div#menu >li {
     display: table-cell;
     vertical-align: middle;
     border: 2px solid white;
-    border-radius: 15px;
+    border-radius: 12px;
     text-align: center;
     font-weight: bold;
+    text-decoration:none;
 }
 
 table {

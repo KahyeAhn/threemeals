@@ -8,19 +8,64 @@
 {% block content %}
 <div id="content">
     <p>
-        <h4>장보기메모</h4>
+
+        <span style="font-size:15px;"><img src="{% static 'img/memo.png' %}" style="height:30px;">장보기메모<br></span>
         <span>장볼 재료들의 리스트를 확인하세요</span>
+        <span id="addmemo"><a href="#">&#43 메모추가</a></span>
     </p>
     <table>
-        <tr>
-            <td>과일/채소</td>
-        </tr>
-        <tr>
-            <td>수산물</td>
-        </tr>
-        <tr>
-            <td>양념/소스</td>
-        </tr>
+        <tbody>
+        <tr class="type"><td>정육/계란류</td></tr>
+        <br>
+        {% for a in meat %}
+            <tr>
+                <td>{{ a.iteminfo }}</td>
+                <td><form method="POST" action="{% url 'fridge:delete' a.id %}">{% csrf_token %}<input type="submit" value="&times"></form></td>
+            </tr>
+        {% endfor %}
+        <tr class="type"><td>수산물</td></tr>
+       {% for a in seafood %}
+            <tr>
+                <td>{{ a.iteminfo }}</td>
+                <td><form method="POST" action="{% url 'fridge:delete' a.id %}">{% csrf_token %}<input type="submit" value="&times"></form></td>
+            </tr>
+        {% endfor %}
+        <tr class="type"><td>과일/채소</td></tr>
+        {% for a in fruit %}
+            <tr>
+                <td>{{ a.iteminfo }}</td>
+                <td><form method="POST" action="{% url 'fridge:delete' a.id %}">{% csrf_token %}<input type="submit" value="&times"></form></td>
+            </tr>
+        {% endfor %}
+        <tr class="type"><td>유제품</td></tr>
+        {% for a in milk %}
+            <tr>
+                <td>{{ a.iteminfo }}</td>
+                <td><form method="POST" action="{% url 'fridge:delete' a.id %}">{% csrf_token %}<input type="submit" value="&times"></form></td>
+            </tr>
+        {% endfor %}
+         <tr class="type"><td>가공품</td></tr>
+        {% for a in made %}
+            <tr>
+                <td>{{ a.iteminfo }}</td>
+                <td><form method="POST" action="{% url 'fridge:delete' a.id %}">{% csrf_token %}<input type="submit" value="&times"></form></td>
+            </tr>
+        {% endfor %}
+         <tr class="type"><td>밑반찬</td></tr>
+        {% for a in side %}
+            <tr>
+                <td>{{ a.iteminfo }}</td>
+                <td><form method="POST" action="{% url 'fridge:delete' a.id %}">{% csrf_token %}<input type="submit" value="&times"></form></td>
+            </tr>
+        {% endfor %}
+        <tr class="type"><td>음료</td></tr>
+        {% for a in drink %}
+            <tr>
+                <td>{{ a.iteminfo }}</td>
+                <td><form method="POST" action="{% url 'fridge:delete' a.id %}">{% csrf_token %}<input type="submit" value="&times"></form></td>
+            </tr>
+        {% endfor %}
+        </tbody>
     </table>
 </div>
 {% endblock %}

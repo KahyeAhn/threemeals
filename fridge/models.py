@@ -11,3 +11,11 @@ class Ingredient(models.Model):
     unit=models.CharField(max_length=100)
     defaultValue=models.IntegerField(default=0)
     ingredientCode=models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.ingredientName
+
+class ShoppingItem(models.Model):
+    owner = models.ForeignKey(User, null=True)
+    iteminfo = models.ForeignKey(Ingredient, null=True)
+
