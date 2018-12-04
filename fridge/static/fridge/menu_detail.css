@@ -1,0 +1,30 @@
+div#recipe{
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+    float:left;
+    width:685px;
+    padding:10px;
+    margin: 5px;
+
+}
+
+div#yes_ingredients{
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+    float:right;
+    width:685px;
+    padding: 10px;
+    margin: 5px;
+}
+
+div#no_ingredients{
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+    float:right;
+    width:685px;
+    padding: 10px;
+    margin: 5px;
+}

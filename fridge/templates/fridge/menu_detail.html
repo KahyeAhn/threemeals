@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}ingredient_list.html{% endblock %}
+
+{% load staticfiles %}
+{% block extrastyle %}{% static "fridge/menu_detail.css" %}{% endblock %}
+
+
+{% block content %}
+<div id="content">
+
+    <div id="recipe">
+        <h4>계란말이 #메뉴 이름 불러오기</h4>
+        <img src="img.jpg" height="300" title="사진 불러오기"> <br><br>
+        <span> 1. 레시피 불러오기 <br>
+            2. 이러쿵 저러쿵 만들기 <br>
+            3. 배고파요
+        </span>
+
+    </div>
+
+    <div id="yes_ingredients">
+        <h4>있는 재료</h4> <br>
+        #있는 재료+ 재료 수량 변경 컨트롤러
+    </div>
+
+    <div id="no_ingredients">
+        <h4>없는 재료</h4> <br>
+        #없는 재료 + 클릭하면 장보기 메모 리스트에 추가
+    </div>
+
+    <div>
+    #스크랩 버튼 (스크랩 리스트에 추가)<br>
+    #먹었어요 버튼 (냉장고 재료 재고 삭감)
+    </div>
+
+</div>
+{% endblock %}

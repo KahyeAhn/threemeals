@@ -19,6 +19,10 @@ class IngredientHomeView(TemplateView):
 class ScrapHomeView(TemplateView):
     template_name = 'fridge/scrap_list.html'
 
+#menu detail
+class MenuDetailView(TemplateView):
+    template_name = 'fridge/menu_detail.html'
+
 # shopping memo
 class ShoppingHomeView(ListView):
     template_name = 'fridge/shopping_memo.html'
