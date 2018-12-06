@@ -12,31 +12,19 @@ from fridge.models import *
 from rest_framework import viewsets
 from fridge.serializers import IngredientSerializer
 
-
-class FridgeHomeView(TemplateView):
-    template_name = 'fridge/recom_list.html'
-
-class IngredientHomeView(TemplateView):
-    template_name = 'fridge/ingredient_list.html'
-
-class ScrapHomeView(TemplateView):
-    template_name = 'fridge/scrap_list.html'
-
-#menu detail
-class MenuDetailView(TemplateView):
-    template_name = 'fridge/menu_detail.html'
-
+# ShoppingMemoController
 # shopping memo
-class ShoppingHomeView(ListView):
+class ShoppingList(ListView):
     template_name = 'fridge/shopping_memo.html'
     context_object_name = 'all_shopping'
 
+    # get_user_item
     def get_queryset(self):
         return ShoppingItem.objects.filter(owner=self.request.user)
 
-
+    # get_shopping_item
     def get_context_data(self, **kwargs):
-        shopping_list = super(ShoppingHomeView, self).get_context_data(**kwargs)
+        shopping_list = super(ShoppingList, self).get_context_data(**kwargs)
         shopping_list['meat'] = ShoppingItem.objects.filter(iteminfo__type=1)
         shopping_list['seafood'] = ShoppingItem.objects.filter(iteminfo__type=2)
         shopping_list['fruit'] = ShoppingItem.objects.filter(iteminfo__type=3)
@@ -51,6 +39,7 @@ class ShoppingHomeView(ListView):
 class ItemDeleteView(LoginRequiredMixin, DeleteView):
     model = ShoppingItem
     success_url = reverse_lazy('fridge:shopping')
+
 
 #Add Ingredient
 class AddIngredient(TemplateView):
@@ -80,6 +69,21 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
         queryset = ingredients
         return queryset
+
+
+class FridgeHomeView(TemplateView):
+    template_name = 'fridge/recom_list.html'
+
+class IngredientHomeView(TemplateView):
+    template_name = 'fridge/ingredient_list.html'
+
+class ScrapHomeView(TemplateView):
+    template_name = 'fridge/scrap_list.html'
+
+#menu detail
+class MenuDetailView(TemplateView):
+    template_name = 'fridge/menu_detail.html'
+
 
 # class MealCreateView(LoginRequiredMixin, CreateView):
 #     model = MealPref
