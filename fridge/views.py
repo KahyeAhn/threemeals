@@ -9,6 +9,9 @@ from django.core.urlresolvers import reverse_lazy
 from myblog.views import LoginRequiredMixin
 
 from fridge.models import *
+from rest_framework import viewsets
+from fridge.serializers import IngredientSerializer
+
 
 class FridgeHomeView(TemplateView):
     template_name = 'fridge/recom_list.html'
@@ -48,6 +51,35 @@ class ShoppingHomeView(ListView):
 class ItemDeleteView(LoginRequiredMixin, DeleteView):
     model = ShoppingItem
     success_url = reverse_lazy('fridge:shopping')
+
+#Add Ingredient
+class AddIngredient(TemplateView):
+    template_name = 'fridge/addingredient.html'
+    
+    def get_ingre(self):
+        ingredient_type = int(self.request.GET.get('type') or '0')
+        if ingredient_type == 0:
+            ingredients = Ingredient.objects.all()
+        else:
+            ingredients = Ingredient.objects.filter(type=ingredient_type)
+        context = {'ingredients': ingredients}
+        return context
+
+class IngredientViewSet(viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
+    lookup_field = 'type'
+
+
+    def get_queryset(self):
+        ingredient_type = int(self.request.GET.get('type') or '0')
+        if ingredient_type == 0:
+            ingredients = Ingredient.objects.all()
+        else:
+            ingredients = Ingredient.objects.filter(type=ingredient_type)
+
+        queryset = ingredients
+        return queryset
 
 # class MealCreateView(LoginRequiredMixin, CreateView):
 #     model = MealPref

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>채워넣기</title>
+</head>
+
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static "fridge/adding.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% block extrastyle %}{% endblock %}"/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+
+
+<body>
+    <div class="search-container">
+        <div class="search-box"><!--재료명을 입력하세요 부분 -->
+            <input type="text" class="search-txt" placeholder="재료명을 입력하세요">
+            <a class="search-btn" href="#">
+                <i class="fas fa-search"></i>
+            </a>
+
+        </div>
+    </div>
+    <div class="ingredient-container">
+        <div class="total-lists">
+            <div class="categories">
+                <p>왼쪽 카테고리</p>
+                <ul>
+                    <li><a class="category-button" id="type-1">정육계란류</a></li>
+                    <li><a class="category-button" id="type-2">수산물</a></li>
+                    <li><a class="category-button" id="type-3">과일/채소</a></li>
+                    <li><a class="category-button" id="type-4">곡물/견과류</a></li>
+                    <li><a class="category-button" id="type-5">유제품</a></li>
+                    <li><a class="category-button" id="type-6">가공품</a></li>
+                    <li><a class="category-button" id="type-7">밑반찬</a></li>
+                </ul>
+            </div>
+            <div class="sub-categories" id="sub-categories">
+                <p>오른쪽 재료들</p>
+                <div id="ingredients-container">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="chosen-container">
+        <div class="sub-categories" id="chosen">
+        </div>
+        <div class="button-container">
+            <center><button id="submit-ingredients">추가</button></center>
+            <!-- <i class="far fa-plus-circle" id="submit-ingredients"></i> -->
+        </div>
+    </div>
+    <script>
+(function ($, window) {
+    let dict = {};
+    function ingredientContainerTemplate(data) {
+        let html = "";
+        html += `<ul>`;
+        html += `<li class="ingredient-item" id="ingredient-${data.ingredientCode}">${data.ingredientName}</li>`;
+        html += `</ul>`;
+        return html;
+    }
+    function ingredientContainerTemplates(datas) {
+        let html = "";
+        for (let i = 0; i < datas.length; i++) {
+            html += ingredientContainerTemplate(datas[i]);
+        }
+        return html;
+    }
+    function setIngredientsContainer(datas) {
+        $("#ingredients-container").children().remove();
+        $("#ingredients-container").append(ingredientContainerTemplates(datas));
+    }
+    function selectedIngredientTemplate(data) {
+        let html = "";
+        html += `<ul>`;
+        html += `<li class="chosen-ingredient-item" id="chosen-ingredient-${data.ingredientCode}">${data.ingredientName}</li>`;
+        html += `</ul>`;
+        return html;
+    }
+    function addSelectedIngredient(data) {
+        const $e = $(`#chosen-ingredient-${data.ingredientCode}`);
+        if ($e.get(0) !== undefined) {
+            return;
+        }
+        $("#chosen").append(selectedIngredientTemplate(data));
+    }
+    $(".category-button").on("click", function(e) {
+        const $this = $(this);
+        const $id = Number($this.get(0).id.split("-")[1]);
+
+        $.ajax({
+            url: `/fridge/api/ingredients?type=${$id}`
+        })
+        .done(function(response) {
+            for (let i = 0; i < response.length ; i++) {
+                if (response[i].ingredientCode in dict) {
+                } else {
+                    dict[response[i].ingredientCode] = response[i];
+                }
+            }
+            setIngredientsContainer(response);
+            didClickIngredientItem();
+        })
+        .fail(function(error) {
+        })
+        .always(function() {
+            console.log("always");
+        });
+    });
+    function didClickIngredientItem() {
+        $(".ingredient-item").off("click");
+        $(".ingredient-item").on("click", function(e) {
+            const $this = $(this);
+            const $id = Number($this.get(0).id.split("-")[1]);
+
+            console.log($id);
+            const data = dict[$id];
+            addSelectedIngredient(data);
+            didClickSelectedIngredientItem();
+        });
+    }
+    $("#submit-ingredients").on("click", function(e) {
+        const $selected = $(".chosen-ingredient-item");
+        const ids = [];
+        for (let i = 0; i < $selected.length; i++) {
+            const id = Number($selected[i].id.split("-")[2]);
+            ids.push(id);
+        }
+        const data = {"ingredient_ids": JSON.stringify(ids)};
+        $.ajax({
+            url: "/fridge/api/ingredients/selected",
+            type: "post",
+            data: data
+        })
+        .done(function(response) {
+            console.log(response);
+        })
+        .fail(function(error) {
+            console.log(error);
+        })
+        .always(function() {
+            console.log("submit selected ingredients");
+        });
+    });
+    function didClickSelectedIngredientItem() {
+        const $e = $(".chosen-ingredient-item");
+        $e.off("click");
+        $e.on("click", function(e) {
+            const $this = $(this);
+            $this.remove();
+        });
+    }
+    window.dict = dict;
+
+}($, window)); 
+    </script>
+</body>
+</html>
