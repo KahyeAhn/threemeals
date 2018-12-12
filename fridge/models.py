@@ -23,9 +23,9 @@ class ShoppingItem(models.Model):
     owner = models.ForeignKey(User, null=True)
     iteminfo = models.ForeignKey(Ingredient, null=True)
 
-
-    def delete_item(self):
-        self.delete()
+    def delete_item(pk):
+        delete_item = ShoppingItem.objects.get(pk=pk)
+        delete_item.delete()
     # get_shopping_item
     @staticmethod
     def get_shopping_list(owner):
@@ -36,24 +36,11 @@ class ShoppingItem(models.Model):
         shopping_list['fruit'] = user_shopping_list.filter(iteminfo__type=3)
         shopping_list['grain'] = user_shopping_list.filter(iteminfo__type=4)
         shopping_list['milk'] = user_shopping_list.filter(iteminfo__type=5)
-        shopping_list['made'] = user_shopping_list.objects.filter(iteminfo__type=6)
-        shopping_list['side'] = user_shopping_list.objects.filter(iteminfo__type=7)
-        shopping_list['drink'] = user_shopping_list.objects.filter(iteminfo__type=8)
+        shopping_list['made'] = user_shopping_list.filter(iteminfo__type=6)
+        shopping_list['side'] = user_shopping_list.filter(iteminfo__type=7)
+        shopping_list['drink'] = user_shopping_list.filter(iteminfo__type=8)
         print(shopping_list)
         return shopping_list
-
-    # def get_context_data(self, **kwargs):
-    #     shopping_list = super(ShoppingList, self).get_context_data(**kwargs)
-    #     shopping_list['meat'] = ShoppingItem.objects.filter(iteminfo__type=1)
-    #     shopping_list['seafood'] = ShoppingItem.objects.filter(iteminfo__type=2)
-    #     shopping_list['fruit'] = ShoppingItem.objects.filter(iteminfo__type=3)
-    #     shopping_list['grain'] = ShoppingItem.objects.filter(iteminfo__type=4)
-    #     shopping_list['milk'] = ShoppingItem.objects.filter(iteminfo__type=5)
-    #     shopping_list['made'] = ShoppingItem.objects.filter(iteminfo__type=6)
-    #     shopping_list['side'] = ShoppingItem.objects.filter(iteminfo__type=7)
-    #     shopping_list['drink'] = ShoppingItem.objects.filter(iteminfo__type=8)
-    #     print(shopping_list)
-    #     return shopping_list
 
 # class FridgeItem(models.Model):
 #     owner = models.ForeignKey(User, null=True)

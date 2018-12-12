@@ -30,8 +30,29 @@ class ShoppingList(View):
         template_name = 'fridge/shopping_memo.html'
         owner = request.user
         shopping_list = ShoppingItem.get_shopping_list(owner)
-        return render(request, template_name, {shopping_list: shopping_list})
-
+        return render(request, template_name, {'meat': shopping_list['meat'],
+                                               'seafood': shopping_list['seafood'],
+                                               'fruit': shopping_list['fruit'],
+                                               'grain': shopping_list['grain'],
+                                               'milk': shopping_list['milk'],
+                                               'made': shopping_list['made'],
+                                               'side': shopping_list['side'],
+                                               'drink': shopping_list['drink'],
+                                               })
+    def post(self, request, pk):
+        template_name = 'fridge/shopping_memo.html'
+        owner = request.user
+        shopping_list = ShoppingItem.get_shopping_list(owner)
+        ShoppingItem.delete_item(pk)
+        return render(request, template_name, {'meat': shopping_list['meat'],
+                                               'seafood': shopping_list['seafood'],
+                                               'fruit': shopping_list['fruit'],
+                                               'grain': shopping_list['grain'],
+                                               'milk': shopping_list['milk'],
+                                               'made': shopping_list['made'],
+                                               'side': shopping_list['side'],
+                                               'drink': shopping_list['drink'],
+                                               })
 # ShoppingMemoController
 # class ShoppingItemDelete(LoginRequiredMixin, DeleteView):
 #     model = ShoppingItem
