@@ -2,7 +2,10 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+
 #from django. .decorator import property
+
+from datetime import date
 
 class Ingredient(models.Model):
     ingredientName= models.CharField(max_length=50)
@@ -20,25 +23,41 @@ class ShoppingItem(models.Model):
     owner = models.ForeignKey(User, null=True)
     iteminfo = models.ForeignKey(Ingredient, null=True)
 
-    # get_user_item
-    def get_user_item(self):
-        return ShoppingItem.objects.filter(owner=self.request.user)
 
+    def delete_item(self):
+        self.delete()
     # get_shopping_item
-    def get_context_data(self, **kwargs):
-        shopping_list = super(ShoppingList, self).get_context_data(**kwargs)
-        shopping_list['meat'] = ShoppingItem.objects.filter(iteminfo__type=1)
-        shopping_list['seafood'] = ShoppingItem.objects.filter(iteminfo__type=2)
-        shopping_list['fruit'] = ShoppingItem.objects.filter(iteminfo__type=3)
-        shopping_list['grain'] = ShoppingItem.objects.filter(iteminfo__type=4)
-        shopping_list['milk'] = ShoppingItem.objects.filter(iteminfo__type=5)
-        shopping_list['made'] = ShoppingItem.objects.filter(iteminfo__type=6)
-        shopping_list['side'] = ShoppingItem.objects.filter(iteminfo__type=7)
-        shopping_list['drink'] = ShoppingItem.objects.filter(iteminfo__type=8)
+    @staticmethod
+    def get_shopping_list(owner):
+        user_shopping_list = ShoppingItem.objects.filter(owner=owner)
+        shopping_list = {}
+        shopping_list['meat'] = user_shopping_list.filter(iteminfo__type=1)
+        shopping_list['seafood'] = user_shopping_list.filter(iteminfo__type=2)
+        shopping_list['fruit'] = user_shopping_list.filter(iteminfo__type=3)
+        shopping_list['grain'] = user_shopping_list.filter(iteminfo__type=4)
+        shopping_list['milk'] = user_shopping_list.filter(iteminfo__type=5)
+        shopping_list['made'] = user_shopping_list.objects.filter(iteminfo__type=6)
+        shopping_list['side'] = user_shopping_list.objects.filter(iteminfo__type=7)
+        shopping_list['drink'] = user_shopping_list.objects.filter(iteminfo__type=8)
         print(shopping_list)
         return shopping_list
-    #
-    # def addIngredient(self, ingredient_id):
-    #     ingredient = Ingredient.objects.get(pk=ingredient_id)
-    #     self.iteminfo = ingredient
-    #     self.save()
+
+    # def get_context_data(self, **kwargs):
+    #     shopping_list = super(ShoppingList, self).get_context_data(**kwargs)
+    #     shopping_list['meat'] = ShoppingItem.objects.filter(iteminfo__type=1)
+    #     shopping_list['seafood'] = ShoppingItem.objects.filter(iteminfo__type=2)
+    #     shopping_list['fruit'] = ShoppingItem.objects.filter(iteminfo__type=3)
+    #     shopping_list['grain'] = ShoppingItem.objects.filter(iteminfo__type=4)
+    #     shopping_list['milk'] = ShoppingItem.objects.filter(iteminfo__type=5)
+    #     shopping_list['made'] = ShoppingItem.objects.filter(iteminfo__type=6)
+    #     shopping_list['side'] = ShoppingItem.objects.filter(iteminfo__type=7)
+    #     shopping_list['drink'] = ShoppingItem.objects.filter(iteminfo__type=8)
+    #     print(shopping_list)
+    #     return shopping_list
+
+# class FridgeItem(models.Model):
+#     owner = models.ForeignKey(User, null=True)
+#     iteminfo=models.ForeignKey(Ingredient, null=True)
+#     enterdate=models.DateField(default=date.today)
+#     holdingamount=models.IntegerField(default=0)
+

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}ingredient_list.html{% endblock %}
+{% block title %}manage.html{% endblock %}
 
 {% load staticfiles %}
-{% block extrastyle %}{% static "fridge/ingredient_list.css" %}{% endblock %}
+{% block extrastyle %}{% static "fridge/manage.css" %}{% endblock %}
 
 {% block content %}
 <div id="content">
@@ -17,7 +17,7 @@
         <p>실온</p>
     </div>
     <div>
-        <p>채워넣기</p>
+        <p>채워넣기</a></p>
         {% if object_list %}
         <ul>
             {% for ingredient in object_list %}
