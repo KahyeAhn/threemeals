@@ -134,11 +134,12 @@
         }
         const data = {"ingredient_ids": JSON.stringify(ids)};
         $.ajax({
-            url: "/fridge/api/ingredients/selected",
+            url: "/fridge/api/ingredients/selected/shopping/",
             type: "post",
             data: data
         })
         .done(function(response) {
+            window.location.href = "/fridge/shopping";
             console.log(response);
         })
         .fail(function(error) {

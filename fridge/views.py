@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 
 # Create your views here.
@@ -6,11 +7,20 @@ from django.views.generic import ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
+from django.http import JsonResponse
 from myblog.views import LoginRequiredMixin
 
 from fridge.models import *
 from rest_framework import viewsets
 from fridge.serializers import IngredientSerializer
+from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
 
 # ShoppingMemoController
 # shopping memo
@@ -41,9 +51,9 @@ class ItemDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('fridge:shopping')
 
 
-#Add Ingredient
+#AddIngredientController_1
 class AddIngredient(TemplateView):
-    template_name = 'fridge/addingredient.html'
+    template_name = 'fridge/addingredient_shopping.html'
     
     def get_ingre(self):
         ingredient_type = int(self.request.GET.get('type') or '0')
@@ -70,12 +80,40 @@ class IngredientViewSet(viewsets.ModelViewSet):
         queryset = ingredients
         return queryset
 
+#AddIngredientController_2
+#save ingredient in DB at shopping page
+class SaveItemShopping(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    def post(self, request, format=None):
+        try:
+            data = request.data['ingredient_ids']
+            data = json.loads(data)
+        except Exception as e:
+            print (e)
+            return JsonResponse({'code': 400, 'message': 'bad request, arguments error'})
+        current_user = request.user
+
+        for ingredient_id in data:
+            ingredient = Ingredient.objects.filter(ingredientCode=int(ingredient_id)).first()
+            shopping_item = ShoppingItem.objects.filter(owner=current_user, iteminfo=ingredient).first()
+            if shopping_item:
+                None
+            else:
+                new_shopping_item = ShoppingItem(owner=current_user, iteminfo=ingredient)
+                try:
+                    new_shopping_item.save()
+                except Exception as e:
+                    return JsonResponse({'code': 500, "message": "error: database commit"})
+        return JsonResponse({'code': 200, 'message': 'add success'})
+
+
+
 
 class FridgeHomeView(TemplateView):
     template_name = 'fridge/recom_list.html'
 
-class IngredientHomeView(TemplateView):
-    template_name = 'fridge/ingredient_list.html'
+class ManageHomeView(TemplateView):
+    template_name = 'fridge/manage.html'
 
 class ScrapHomeView(TemplateView):
     template_name = 'fridge/scrap_list.html'

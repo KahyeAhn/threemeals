@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from datetime import date
 
 class Ingredient(models.Model):
     ingredientName= models.CharField(max_length=50)
@@ -19,3 +20,8 @@ class ShoppingItem(models.Model):
     owner = models.ForeignKey(User, null=True)
     iteminfo = models.ForeignKey(Ingredient, null=True)
 
+# class FridgeItem(models.Model):
+#     owner = models.ForeignKey(User, null=True)
+#     iteminfo=models.ForeignKey(Ingredient, null=True)
+#     enterdate=models.DateField(default=date.today)
+#     holdingamount=models.IntegerField(default=0)
