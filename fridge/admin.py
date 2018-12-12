@@ -5,3 +5,4 @@ from fridge.models import Ingredient, ShoppingItem
 
 admin.site.register(Ingredient)
 admin.site.register(ShoppingItem)
+#admin.site.register(FridgeItem)

@@ -10,11 +10,15 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'ingredients', IngredientViewSet)
+# router.register(r'ingredients/selected', AddIngredientItem.as_view(), basename='ingredients')
 
 urlpatterns=[
     url(r'^$', FridgeHomeView.as_view(), name='recommendation'),
-    url(r'^ingredient/$', IngredientHomeView.as_view(), name='ingredient'),
-    url(r'^ingredient/add/$', AddIngredient.as_view(), name="adding"),
+    url(r'^manage/$', ManageHomeView.as_view(), name='manage'),
+    url(r'^manage/add/$', AddIngredient.as_view(), name="adding_manage"),
+    url(r'^shopping/add/$', AddIngredient.as_view(), name="adding_shopping"),
+    url(r'^api/ingredients/selected/shopping/$', SaveItemShopping.as_view(), name="saveitem_shopping"),
+    
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^scrap/$', ScrapHomeView.as_view(), name="scrap"),
