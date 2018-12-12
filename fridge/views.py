@@ -14,6 +14,7 @@ from fridge.serializers import IngredientSerializer
 
 # ShoppingMemoController
 # shopping memo
+
 class ShoppingList(ListView):
     template_name = 'fridge/shopping_memo.html'
     context_object_name = 'all_shopping'
@@ -36,7 +37,8 @@ class ShoppingList(ListView):
         print(shopping_list)
         return shopping_list
 
-class ItemDeleteView(LoginRequiredMixin, DeleteView):
+# ShoppingMemoController
+class ShoppingItemDelete(LoginRequiredMixin, DeleteView):
     model = ShoppingItem
     success_url = reverse_lazy('fridge:shopping')
 
@@ -44,7 +46,7 @@ class ItemDeleteView(LoginRequiredMixin, DeleteView):
 #Add Ingredient
 class AddIngredient(TemplateView):
     template_name = 'fridge/addingredient.html'
-    
+    # shopping_item =  ShoppingItem.objects.get(pk=request.)
     def get_ingre(self):
         ingredient_type = int(self.request.GET.get('type') or '0')
         if ingredient_type == 0:
