@@ -28,7 +28,7 @@ class ShoppingItem(models.Model):
         delete_item.delete()
     # get_shopping_item
     @staticmethod
-    def get_shopping_list(owner):
+    def get_shopping_item(owner):
         user_shopping_list = ShoppingItem.objects.filter(owner=owner)
         shopping_list = {}
         shopping_list['meat'] = user_shopping_list.filter(iteminfo__type=1)

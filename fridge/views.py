@@ -26,10 +26,11 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 
 
 class ShoppingList(View):
+    # get_shopping_list
     def get(self, request):
         template_name = 'fridge/shopping_memo.html'
         owner = request.user
-        shopping_list = ShoppingItem.get_shopping_list(owner)
+        shopping_list = ShoppingItem.get_shopping_item(owner)
         return render(request, template_name, {'meat': shopping_list['meat'],
                                                'seafood': shopping_list['seafood'],
                                                'fruit': shopping_list['fruit'],
@@ -39,10 +40,11 @@ class ShoppingList(View):
                                                'side': shopping_list['side'],
                                                'drink': shopping_list['drink'],
                                                })
+    # delete_item
     def post(self, request, pk):
         template_name = 'fridge/shopping_memo.html'
         owner = request.user
-        shopping_list = ShoppingItem.get_shopping_list(owner)
+        shopping_list = ShoppingItem.get_shopping_item(owner)
         ShoppingItem.delete_item(pk)
         return render(request, template_name, {'meat': shopping_list['meat'],
                                                'seafood': shopping_list['seafood'],
