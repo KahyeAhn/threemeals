@@ -55,6 +55,20 @@ class ShoppingItem(models.Model):
 class Recipe(models.Model):
     sauce = models.TextField()
     description = models.TextField()
+    menu = models.OneToOneField('Menu', on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Recipe'
+
+
+class Menu(models.Model):
+    menu_name = models.CharField(max_length=50)
+    main_ingredients = models.ManyToManyField(Ingredient)
+    sub_ingredients = models.ManyToManyField(Ingredient, blank=True)
+
+    def __str__(self):
+        return self.menu_name
+
+    class Meta:
+        verbose_name = 'Cooking Menu'
+        ordering = ['menu_name']
