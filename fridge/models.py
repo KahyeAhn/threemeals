@@ -63,8 +63,8 @@ class Recipe(models.Model):
 
 class Menu(models.Model):
     menu_name = models.CharField(max_length=50)
-    main_ingredients = models.ManyToManyField(Ingredient)
-    sub_ingredients = models.ManyToManyField(Ingredient, blank=True)
+    main_ingredients = models.ManyToManyField(Ingredient, related_name='main_ingredients')
+    sub_ingredients = models.ManyToManyField(Ingredient, related_name='sub_ingredients', blank=True)
 
     def __str__(self):
         return self.menu_name
