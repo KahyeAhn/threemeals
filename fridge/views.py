@@ -1,5 +1,5 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.views.generic import ListView, View
@@ -115,8 +115,21 @@ class SaveItemShopping(APIView):
                     return JsonResponse({'code': 500, "message": "error: database commit"})
         return JsonResponse({'code': 200, 'message': 'add success'})
 
+class RecommendationList(View):
 
+    def get(self, request):
+        template_name = 'fridge/recom_list.html'
+        owner = request.user
+        recommendation_list = Recommendation.get_recommendation(owner)
+        print(recommendation_list)
+        return render(request, template_name, {'recom_list' : recommendation_list})
 
+class RecommendationDetail(View):
+
+    def get(self, request, pk):
+        template_name = 'fridge/menu_detail.html'
+        recom_menu = get_object_or_404(Menu, pk=pk)
+        return render(request, template_name, {'menu':recom_menu})
 
 class FridgeHomeView(TemplateView):
     template_name = 'fridge/recom_list.html'
@@ -130,28 +143,3 @@ class ScrapHomeView(TemplateView):
 #menu detail
 class MenuDetailView(TemplateView):
     template_name = 'fridge/menu_detail.html'
-
-
-# class MealCreateView(LoginRequiredMixin, CreateView):
-#     model = MealPref
-#     fields = ['morning', 'lunch', 'dinner']
-#     success_url = reverse_lazy('mealpref:index')
-#     def form_valid(self, form):
-#         form.instance.pref_user = self.request.user
-#         return super(MealCreateView, self).form_valid(form)
-#
-# class MealChangeLV(LoginRequiredMixin, ListView):
-#     template_name = 'mealpref/mealpref_change_list.html'
-#
-#     def get_queryset(self):
-#         return MealPref.objects.filter(pref_user=self.request.user)
-#
-# class MealUpdateView(LoginRequiredMixin, UpdateView):
-#     model = MealPref
-#     fields = ['morning', 'lunch', 'dinner']
-#     success_url = reverse_lazy('mealpref:index')
-#
-# class MealDeleteView(LoginRequiredMixin, DeleteView):
-#     model = MealPref
-#     success_url = reverse_lazy('mealpref:index')
-
