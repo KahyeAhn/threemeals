@@ -9,3 +9,8 @@ div#my_fridge{
     float:right;
     width:50%;
 }
+
+
+ul {
+  list-style-type: none;
+}

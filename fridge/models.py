@@ -47,7 +47,6 @@ class ShoppingItem(models.Model):
         shopping_list['made'] = user_shopping_list.filter(iteminfo__type=6)
         shopping_list['side'] = user_shopping_list.filter(iteminfo__type=7)
         shopping_list['drink'] = user_shopping_list.filter(iteminfo__type=8)
-        print(shopping_list)
         return shopping_list
 
 
@@ -64,7 +63,7 @@ class Recipe(models.Model):
     menu = models.OneToOneField('Menu', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.menu
+        return self.menu.menu_name
 
     class Meta:
         verbose_name = 'Recipe'
@@ -86,13 +85,35 @@ class Menu(models.Model):
         verbose_name = 'Cooking Menu'
         ordering = ['menu_name']
 
-# class Photo(models.Model):
-#     recipe = models.ForeignKey('Recipe', null=True, blank=True, on_delete=models.SET_NULL)
-#     image = models.ImageField(upload_to='images/recipe')
-#     thumbnail
+#유저 냉장고 모델
+class FridgeItem(models.Model):
+    owner = models.ForeignKey(User, null=True)
+    iteminfo=models.ForeignKey(Ingredient, null=True)
+    created_at=models.DateTimeField(auto_now_add=True) #생성날짜
+    updated_at=models.DateTimeField(auto_now=True) #갱신날짜
+    holdingamount=models.IntegerField(default=0)
 
-# class FridgeItem(models.Model):
-#     owner = models.ForeignKey(User, null=True)
-#     iteminfo=models.ForeignKey(Ingredient, null=True)
-#     enterdate=models.DateField(default=date.today)
-#     holdingamount=models.IntegerField(default=0)
+    #get_fridge_item
+    @staticmethod
+    def get_fridge_item(owner):
+        user_fridge_item=FridgeItem.objects.filter(owner=owner)
+        fridge_item={}
+        fridge_item['cold'] = user_fridge_item.filter(iteminfo__storageMethod=1)
+        fridge_item['frozen'] = user_fridge_item.filter(iteminfo__storageMethod=2)
+        fridge_item['warm'] = user_fridge_item.filter(iteminfo__storageMethod=3)
+        return fridge_item
+
+class Recommendation(models.Model):
+    owner = models.ForeignKey(User, null=True)
+
+    @staticmethod
+    def get_recommendation(owner):
+        recommendation_list = []
+        #has_ingredient = FridgeItem.objects.filter(owner=owner)
+        # 추천 로직 넣기
+        all_menu = Menu.objects.filter()
+        for i in all_menu:
+            recommendation_list.append(i)
+
+        return recommendation_list
+
