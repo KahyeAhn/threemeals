@@ -21,12 +21,12 @@ urlpatterns=[
     
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^scrap/$', ScrapHomeView.as_view(), name="scrap"),
+
+    url(r'^scrap/$', Scrap.as_view(), name="scrap_list"),
+    url(r'^(?P<pk>[0-9]+)/scrap/$', Scrap.as_view(), name="do_scrap"),
 
     url(r'^recommedation/$', RecommendationList.as_view(), name='recommendation'),
     url(r'^(?P<pk>[0-9]+)/menu_detail/$', RecommendationDetail.as_view(), name='menu_detail'),
-
-
 
     url(r'^shopping/$', ShoppingList.as_view(), name="shopping"),
     url(r'^(?P<pk>[0-9]+)/delete/$', ShoppingList.as_view(), name="delete"),

@@ -6,7 +6,10 @@ from django.contrib.auth.models import User
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
+from django.shortcuts import get_object_or_404
+
 from .fields import JSONField
+from math import *
 
 # from django. .decorator import property
 
@@ -60,7 +63,7 @@ class Sauce(models.Model):
 class Recipe(models.Model):
     sauce = models.ManyToManyField(Sauce, related_name='sauce')
     description = models.TextField()
-    menu = models.OneToOneField('Menu', on_delete=models.CASCADE)
+    menu = models.OneToOneField('Menu', on_delete=models.CASCADE, related_name='recipe')
 
     def __str__(self):
         return self.menu.menu_name
@@ -108,12 +111,66 @@ class Recommendation(models.Model):
 
     @staticmethod
     def get_recommendation(owner):
+
+        def jaccard_similarity(x, y):
+            intersection_cardinality = len(set.intersection(*[set(x), set(y)]))
+            union_cardinality = len(set.union(*[set(x), set(y)]))
+            return intersection_cardinality / float(union_cardinality)
         recommendation_list = []
-        #has_ingredient = FridgeItem.objects.filter(owner=owner)
-        # 추천 로직 넣기
+        # temp_list = {}
+        # has_ingredient = set(FridgeItem.objects.filter(owner=owner))
+        #
+        # if(len(has_ingredient)==0):
+        #     return []
+        #
+        # # 추천 로직 넣기
         all_menu = Menu.objects.filter()
+        #
+        # for i in all_menu:
+        #     menu_main = set(int(k) for k in i.main_ingredients.keys())
+        #     jaccard_main = jaccard_similarity(has_ingredient, menu_main)
+        #     temp_list[i] = jaccard_main
+        #
+        # temp_list = sorted(temp_list.items(), key=lambda x: x[1])
+        #
+        # recommendation_list = temp_list
+
         for i in all_menu:
             recommendation_list.append(i)
 
         return recommendation_list
+
+    def has_what(owner, pk):
+        menu_item = Menu.objects.get(pk=pk)
+        menu_main = set(int(k) for k in menu_item.main_ingredients.keys())
+        fridge_item = FridgeItem.objects.values_list('iteminfo', flat=True).filter(owner=owner)
+        has_fridge= set()
+        for k in fridge_item:
+            has_fridge.add(Ingredient.objects.get(pk=k).ingredientCode)
+
+        # 있는 재료의 재료코드
+        temp_yes_ingre = menu_main.intersection(has_fridge)
+        # 없는 재료의 재료코드
+        temp_no_ingre = menu_main.difference(has_fridge)
+
+        yes_ingre = {}
+        no_ingre = {}
+
+
+        for k in temp_yes_ingre:
+            yes_ingre[Ingredient.objects.get(ingredientCode=k)] = menu_item.main_ingredients[str(k)]
+
+        for k in temp_no_ingre:
+            no_ingre[Ingredient.objects.get(ingredientCode=k)] = menu_item.main_ingredients[str(k)]
+
+        return (yes_ingre, no_ingre)
+
+class ScrapList(models.Model):
+    owner = models.ForeignKey(User, null=True)
+    scrap_list = models.ManyToManyField(Menu, related_name='scrap_list', blank=True)
+
+    def scrap_menu(self, owner, pk):
+        self.owner=owner
+        self.scrap_list.add(Menu.objects.get(pk=pk))
+
 

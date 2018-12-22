@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from django.views.generic import ListView, View
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 from django.core.urlresolvers import reverse_lazy
 from django.http import JsonResponse
 from myblog.views import LoginRequiredMixin
@@ -116,20 +116,33 @@ class SaveItemShopping(APIView):
         return JsonResponse({'code': 200, 'message': 'add success'})
 
 class RecommendationList(View):
-
+    # get recommendation list
     def get(self, request):
         template_name = 'fridge/recom_list.html'
         owner = request.user
         recommendation_list = Recommendation.get_recommendation(owner)
-        print(recommendation_list)
         return render(request, template_name, {'recom_list' : recommendation_list})
 
 class RecommendationDetail(View):
-
+    # get recommendation recipe
     def get(self, request, pk):
         template_name = 'fridge/menu_detail.html'
         recom_menu = get_object_or_404(Menu, pk=pk)
-        return render(request, template_name, {'menu':recom_menu})
+        yes_ingre, no_ingre = Recommendation.has_what(request.user, pk)
+
+        return render(request, template_name, {'menu':recom_menu,
+                                               'yes_ingre':yes_ingre,
+                                               'no_ingre':no_ingre})
+class Scrap(View):
+    def get(self, request):
+        template_name = 'fridge/scrap_list.html'
+        owner = request.user
+        scrap_list = ScrapList.objects.get(owner=owner)
+        return render(request, template_name, {'scraps': scrap_list})
+
+    def post(self, request, pk):
+        owner = request.user
+        ScrapList.scrap_menu(self, owner, pk)
 
 class FridgeHomeView(TemplateView):
     template_name = 'fridge/recom_list.html'
