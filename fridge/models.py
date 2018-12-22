@@ -4,21 +4,23 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from .fields import JSONField
 
-#from django. .decorator import property
+# from django. .decorator import property
 
 from datetime import date
 
+
 class Ingredient(models.Model):
-    ingredientName= models.CharField(max_length=50)
-    type=models.IntegerField(default=0)
-    category=models.IntegerField(default=0)
-    storageMethod=models.IntegerField(default=0)
-    unit=models.CharField(max_length=100)
-    defaultValue=models.IntegerField(default=0)
-    ingredientCode=models.IntegerField(default=0)
+    ingredientName = models.CharField(max_length=50)
+    type = models.IntegerField(default=0)
+    category = models.IntegerField(default=0)
+    storageMethod = models.IntegerField(default=0)
+    unit = models.CharField(max_length=100)
+    defaultValue = models.IntegerField(default=0)
+    ingredientCode = models.IntegerField(default=0)
 
     def __str__(self):
         return self.ingredientName
+
 
 class ShoppingItem(models.Model):
     owner = models.ForeignKey(User, null=True)
@@ -27,6 +29,7 @@ class ShoppingItem(models.Model):
     def delete_item(pk):
         delete_item = ShoppingItem.objects.get(pk=pk)
         delete_item.delete()
+
     # get_shopping_item
     @staticmethod
     def get_shopping_item(owner):
@@ -80,4 +83,3 @@ class Menu(models.Model):
 #     iteminfo=models.ForeignKey(Ingredient, null=True)
 #     enterdate=models.DateField(default=date.today)
 #     holdingamount=models.IntegerField(default=0)
-
