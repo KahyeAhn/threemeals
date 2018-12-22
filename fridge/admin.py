@@ -1,11 +1,18 @@
 from django.contrib import admin
-from fridge.models import Ingredient, ShoppingItem, Menu, Sauce, Recipe
+from fridge.models import *
 
 # Register your models here.
+
+
+class RecipeAdmin(admin.ModelAdmin):
+    model = Recipe
+    filter_horizontal = ('sauce',)
 
 admin.site.register(Ingredient)
 admin.site.register(ShoppingItem)
 admin.site.register(Menu)
 admin.site.register(Sauce)
 admin.site.register(Recipe)
+admin.site.unregister(Recipe)
+admin.site.register(Recipe, RecipeAdmin)
 #admin.site.register(FridgeItem)
