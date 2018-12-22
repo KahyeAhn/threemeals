@@ -2,6 +2,10 @@ from __future__ import unicode_literals
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
+
 from .fields import JSONField
 
 # from django. .decorator import property
@@ -53,6 +57,7 @@ class Sauce(models.Model):
     def __str__(self):
         return self.sauceName
 
+
 class Recipe(models.Model):
     sauce = models.ManyToManyField(Sauce, related_name='sauce')
     description = models.TextField()
@@ -60,12 +65,17 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.menu
+
     class Meta:
         verbose_name = 'Recipe'
 
+
 class Menu(models.Model):
     menu_name = models.CharField(max_length=50)
-    menu_image = models.ImageField(verbose_name='menu_image')
+    menu_image = models.ImageField(verbose_name='menu_image', upload_to='images/menu')
+    menu_thumbnail = ImageSpecField(source='menu_image', processors=[ResizeToFill(100, 50)],
+                                    format='JPEG',
+                                    options={'quality': 60})
     main_ingredients = JSONField(verbose_name='main_ingredients', default=dict)
     sub_ingredients = JSONField(verbose_name='sub_ingredients', default=dict)
 
@@ -76,7 +86,10 @@ class Menu(models.Model):
         verbose_name = 'Cooking Menu'
         ordering = ['menu_name']
 
-
+# class Photo(models.Model):
+#     recipe = models.ForeignKey('Recipe', null=True, blank=True, on_delete=models.SET_NULL)
+#     image = models.ImageField(upload_to='images/recipe')
+#     thumbnail
 
 # class FridgeItem(models.Model):
 #     owner = models.ForeignKey(User, null=True)
