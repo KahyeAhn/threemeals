@@ -10,7 +10,14 @@
     <div id="recipe_recom">
         <ul>
             {% for recom in recom_list %}
-            <li><a href ="{% url 'fridge:menu_detail' pk=recom.pk %}">{{ recom.menu_name }}</a></li>
+                <div>
+                    {% if recom.menu_thumbnail %}
+                        <img src="{{ recom.menu_thumbnail.url }}" />
+                    {% endif %}
+                    <li><a href ="{% url 'fridge:menu_detail' pk=recom.pk %}">{{ recom.menu_name }}</a></li>
+                </div>
+
+
             {% endfor %}
         </ul>
     </div>

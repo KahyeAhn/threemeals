@@ -71,7 +71,7 @@ class Recipe(models.Model):
 
 class Menu(models.Model):
     menu_name = models.CharField(max_length=50)
-    menu_image = models.ImageField(verbose_name='menu_image', upload_to='images/menu')
+    menu_image = models.ImageField(verbose_name='menu_image', upload_to='images/menu', blank=True)
     menu_thumbnail = ImageSpecField(source='menu_image', processors=[ResizeToFill(100, 50)],
                                     format='JPEG',
                                     options={'quality': 60})

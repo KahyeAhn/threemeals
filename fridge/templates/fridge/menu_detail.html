@@ -11,7 +11,12 @@
 
     <div id="recipe">
         <h4>{{ menu.menu_name }}</h4>
-        <img src="img.jpg" height="300" title="사진 불러오기"> <br><br>
+        {% if menu.menu_image%}
+            <img src="{{ menu.menu_image.url }}" height="300" /> <br><br>
+        {% else %}
+            <img src="//:0" height="300" title="사진 불러오기"> <br><br>
+        {% endif %}
+
         <span>
             {{ menu.description }}
         </span>
