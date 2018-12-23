@@ -1,7 +1,8 @@
+div#content{
+}
+
 div#recipe_recom{
-    background: rgba(225,225,225, .8)
-    background-color:black;
-    width:50%;
+    width:50%
 }
 
 div#my_fridge{
@@ -9,14 +10,25 @@ div#my_fridge{
 }
 
 div.recipe_recom_photo{
-    float:left;
-    width: 180px
+    float: left;
+    width: 190px;
+    height: 180px;
+}
+
+div.recipe_recom_photo > img {
+    border-radius:20px;
+    display: block;
+    margin :0 auto;
+
 }
 
 div.recipe_recom_photo > li {
     font-size : 17px;
     font-weight: bold;
+    text-align : center;
+    color : white;
 }
+
 
 ul {
   list-style-type: none;

@@ -19,6 +19,13 @@
                     <img src="{{ scrap.menu_thumbnail.url }}" /><br>
                     <a href="{% url 'fridge:menu_detail' pk=scrap.pk %}">{{ scrap.menu_name }}</a>
                 </li>
+                    <style type="text/css">
+                        a:link {text-decoration: none; color: black;}
+                        a:visited {text-decoration: none; color: black;}
+                        a:active {text-decoration: none; color: grey;}
+                        a:hover {text-decoration: underline; color: red;}
+                    </style>
+                <form>{% csrf_token %}<input type="submit" value="&times"></form>
             </div>
             {% endfor %}
         </ul>
