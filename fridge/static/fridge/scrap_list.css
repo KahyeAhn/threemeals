@@ -1,0 +1,22 @@
+div.scrap-list {
+    margin : 30px 30px;
+}
+
+div.scrap-list-photo {
+    float: left;
+    width: 150px;
+    height: 200px;
+    padding-right:20px;
+
+}
+
+div.scrap-list-photo > li {
+    font-size : 17px;
+    font-weight: bold;
+    text-align:center;
+}
+
+div.scrap-list-photo > form{
+    text-align:right;
+    padding-right:20px;
+}

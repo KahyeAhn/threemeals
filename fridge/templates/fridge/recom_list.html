@@ -10,19 +10,23 @@
     <div id="recipe_recom">
         <ul>
             {% for recom in recom_list %}
-                <div>
+                <div class = "recipe_recom_photo">
                     {% if recom.menu_thumbnail %}
                         <img src="{{ recom.menu_thumbnail.url }}" />
                     {% endif %}
                     <li><a href ="{% url 'fridge:menu_detail' pk=recom.pk %}">{{ recom.menu_name }}</a></li>
+                            <style type="text/css">
+                                a:link {text-decoration: none; color: black;}
+                                a:visited {text-decoration: none; color: black;}
+                                a:active {text-decoration: none; color: grey;}
+                                a:hover {text-decoration: underline; color: red;}
+                            </style>
                 </div>
-            {% endfor %}
-        </ul>
+                {% endfor %}
+            </ul>
     </div>
     <div id="my_fridge">
         <h5>MY 냉장고</h5>
-
-
 
     </div>
 </div>
