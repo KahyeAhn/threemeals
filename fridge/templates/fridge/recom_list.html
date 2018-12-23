@@ -10,7 +10,7 @@
     <div id="recipe_recom">
         <ul>
             {% for recom in recom_list %}
-                <div>
+                <div class = "recipe_recom_photo">
                     {% if recom.menu_thumbnail %}
                         <img src="{{ recom.menu_thumbnail.url }}" />
                     {% endif %}

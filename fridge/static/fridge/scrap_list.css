@@ -1,0 +1,15 @@
+div.scrap-list {
+    margin : 20px 20px;
+}
+
+div.scrap-list-photo {
+    float: left;
+    width: 180px;
+    height: 180px;
+}
+
+
+div.scrap-list-photo > li {
+    font-size : 17px;
+    font-weight: bold;
+}

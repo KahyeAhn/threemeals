@@ -1,15 +1,22 @@
 div#recipe_recom{
     background: rgba(225,225,225, .8)
     background-color:black;
-    float:left;
     width:50%;
 }
 
 div#my_fridge{
-    float:right;
     width:50%;
 }
 
+div.recipe_recom_photo{
+    float:left;
+    width: 180px
+}
+
+div.recipe_recom_photo > li {
+    font-size : 17px;
+    font-weight: bold;
+}
 
 ul {
   list-style-type: none;
