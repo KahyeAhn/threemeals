@@ -11,13 +11,22 @@
         <h4>MY 스크랩 레시피</h4>
         <span>내가 찜!한 레시피를 확인하세요</span>
     </p>
-    <div>
+    <div class = "scrap-list">
         <ul>
-            {% for scrap in scraps.scrap_list.all %}
-            <li>
-                <img src="{{ scrap.menu_thumbnail.url }}" /><br>
-                <a href="{% url 'fridge:menu_detail' pk=scrap.pk %}">{{ scrap.menu_name }}</a>
-            </li>
+             {% for scrap in scraps %}
+            <div class = "scrap-list-photo">
+                <li>
+                    <img src="{{ scrap.scrapinfo.menu_thumbnail.url }}" /><br>
+                    <a href="{% url 'fridge:menu_detail' pk=scrap.pk %}">{{ scrap.scrapinfo.menu_name }}</a>
+                </li>
+                    <style type="text/css">
+                        a:link {text-decoration: none; color: black;}
+                        a:visited {text-decoration: none; color: black;}
+                        a:active {text-decoration: none; color: grey;}
+                        a:hover {text-decoration: underline; color: red;}
+                    </style>
+                <form>{% csrf_token %}<input type="submit" value="&times"></form>
+            </div>
             {% endfor %}
         </ul>
     </div>

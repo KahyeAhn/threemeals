@@ -10,6 +10,7 @@ from django.http import JsonResponse
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 from myblog.views import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 
 from fridge.models import *
 from rest_framework import viewsets
@@ -162,15 +163,19 @@ class RecommendationDetail(View):
 
 
 class Scrap(View):
-    def get(self, request):
-        template_name = 'fridge/scrap_list.html'
-        owner = request.user
-        scrap_list = ScrapList.objects.get(owner=owner)
-        return render(request, template_name, {'scraps': scrap_list})
 
     def post(self, request, pk):
         owner = request.user
-        ScrapList.scrap_menu(self, owner, pk)
+        ScrapList.add_scrap(owner, pk)
+        return HttpResponseRedirect(self.request.path_info)
+
+    def get(self, request):
+        template_name = 'fridge/scrap_list.html'
+        owner = request.user
+        scrap_list = ScrapList.scrap_menu(owner)
+        return render(request, template_name, {'scraps': scrap_list})
+
+
 
 
 class FridgeHomeView(TemplateView):

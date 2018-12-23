@@ -7,33 +7,51 @@
 
 
 {% block content %}
+
 <div id="content">
-
-    <div id="recipe">
-        <h4>{{ menu.menu_name }}</h4>
-        {% if menu.menu_image %}
-            <img src="{{ menu.menu_image.url }}" height="300" /> <br><br>
-        {% else %}
+    <div class="wrapper">
+        <div id="recipe">
+            <p class="menuTitle" style="text-align:center">{{ menu.menu_name }}</p>
+            {% if menu.menu_image %}
+            <img src="{{ menu.menu_image.url }}" height="300"> <br><br>
+            {% else %}
             <img src="//:0" height="300" title="사진 불러오기"> <br><br>
-        {% endif %}
+            {% endif %}
+            <div class="menuDescription">
+              <p>{{ menu.recipe.description|linebreaks }}</p>
+            </div>
 
-        <span>
-            {{ menu.recipe.description }}
-        </span>
 
-    </div>
+        </div>
 
-    <div id="yes_ingredients">
-        <h4>있는 재료</h4> <br>
-       <ul>
-            {% for ingre_code, ingre_weight in yes_ingre.items %}
-           <li>{{ ingre_code.ingredientName }}<br>
-           {{ ingre_weight }}{{ ingre_code.unit }}</li>
-            {% endfor %}
-           {% for sauce in menu.sauce.all %}
-           <li>{{ sauce }}</li>
-           {% endfor %}
-        </ul>
+        <div class="ingredients">
+            <div id="yes_ingredients">
+                <p class="title"><img src="{% static 'img/checkbox.png' %}" style="height:20px;">있는 재료</p> <br>
+                <ul>
+                    {% for ingre_code, ingre_weight in yes_ingre.items %}
+                    <li>{{ ingre_code.ingredientName }}<br>
+                        {{ ingre_weight }}{{ ingre_code.unit }}</li>
+                    {% endfor %}
+                    {% for sauce in menu.sauce.all %}
+                    <li>{{ sauce }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div id="no_ingredients">
+                <p class="title"><img src="{% static 'img/xbox.png' %}" style="height:20px;">없는 재료</p> <br>
+                <ul>
+                    {% for ingre_code, ingre_weight in no_ingre.items %}
+                    <li>{{ ingre_code.ingredientName }}<br>
+                        {{ ingre_weight }}{{ ingre_code.unit }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class = "scrap">
+                <form method="POST" action="{% url 'fridge:do_scrap' menu.id %}">{% csrf_token %}<input type="submit" style="font-size:150px;" value="스크랩&hearts;"></form>
+            </div>
+        </div>
     </div>
 
     <div id="no_ingredients">

@@ -15,7 +15,6 @@ from math import *
 
 from datetime import date
 
-
 class Ingredient(models.Model):
     ingredientName = models.CharField(max_length=50)
     type = models.IntegerField(default=0)
@@ -75,7 +74,7 @@ class Recipe(models.Model):
 class Menu(models.Model):
     menu_name = models.CharField(max_length=50)
     menu_image = models.ImageField(verbose_name='menu_image', upload_to='images/menu', blank=True)
-    menu_thumbnail = ImageSpecField(source='menu_image', processors=[ResizeToFill(100, 50)],
+    menu_thumbnail = ImageSpecField(source='menu_image', processors=[ResizeToFill(128, 128)],
                                     format='JPEG',
                                     options={'quality': 60})
     main_ingredients = JSONField(verbose_name='main_ingredients', default=dict)
@@ -195,8 +194,24 @@ class Recommendation(models.Model):
 
 class ScrapList(models.Model):
     owner = models.ForeignKey(User, null=True)
-    scrap_list = models.ManyToManyField(Menu, related_name='scrap_list', blank=True)
+    scrapinfo = models.ForeignKey(Menu, null=True)
 
-    def scrap_menu(self, owner, pk):
-        self.owner = owner
-        self.scrap_list.add(Menu.objects.get(pk=pk))
+    # get scraplist
+    @staticmethod
+    def scrap_menu(owner):
+        user_scrap_list = ScrapList.objects.filter(owner=owner)
+        return user_scrap_list
+
+    # add scraplist
+    @staticmethod
+    def add_scrap(owner, pk):
+        owner = User.objects.get(pk=owner.pk)
+        scrapinfo = Menu.objects.get(pk=pk)
+        obj, created = ScrapList.objects.update_or_create(owner=owner, scrapinfo=scrapinfo)
+        obj.save()
+
+    def delete_scrap_item(pk):
+        delete_scrap_item = ScrapList.objects.get(pk=pk)
+        delete_scrap_item.delete()
+
+
