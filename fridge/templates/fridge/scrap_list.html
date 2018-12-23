@@ -13,10 +13,10 @@
     </p>
     <div>
         <ul>
-            {% for scrap in scraps.scrap_list.all %}
+            {% for scrap in scraps %}
             <li>
-                <img src="{{ scrap.menu_thumbnail.url }}" /><br>
-                <a href="{% url 'fridge:menu_detail' pk=scrap.pk %}">{{ scrap.menu_name }}</a>
+                <img src="{{ scrap.scrapinfo.menu_thumbnail.url }}" /><br>
+                <a href="{% url 'fridge:menu_detail' pk=scrap.pk %}">{{ scrap.scrapinfo.menu_name }}</a>
             </li>
             {% endfor %}
         </ul>

@@ -8,6 +8,7 @@ from django.views.generic.base import TemplateView
 from django.core.urlresolvers import reverse_lazy
 from django.http import JsonResponse
 from myblog.views import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 
 from fridge.models import *
 from rest_framework import viewsets
@@ -133,16 +134,21 @@ class RecommendationDetail(View):
         return render(request, template_name, {'menu':recom_menu,
                                                'yes_ingre':yes_ingre,
                                                'no_ingre':no_ingre})
+
 class Scrap(View):
-    def get(self, request):
-        template_name = 'fridge/scrap_list.html'
-        owner = request.user
-        scrap_list = ScrapList.objects.get(owner=owner)
-        return render(request, template_name, {'scraps': scrap_list})
 
     def post(self, request, pk):
         owner = request.user
-        ScrapList.scrap_menu(self, owner, pk)
+        ScrapList.add_scrap(owner, pk)
+        return HttpResponseRedirect(self.request.path_info)
+
+    def get(self, request):
+        template_name = 'fridge/scrap_list.html'
+        owner = request.user
+        scrap_list = ScrapList.scrap_menu(owner)
+        return render(request, template_name, {'scraps': scrap_list})
+
+
 
 class FridgeHomeView(TemplateView):
     template_name = 'fridge/recom_list.html'
