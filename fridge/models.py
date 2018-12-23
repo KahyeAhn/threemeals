@@ -88,23 +88,43 @@ class Menu(models.Model):
         verbose_name = 'Cooking Menu'
         ordering = ['menu_name']
 
-#유저 냉장고 모델
+
+# 유저 냉장고 모델
 class FridgeItem(models.Model):
     owner = models.ForeignKey(User, null=True)
-    iteminfo=models.ForeignKey(Ingredient, null=True)
-    created_at=models.DateTimeField(auto_now_add=True) #생성날짜
-    updated_at=models.DateTimeField(auto_now=True) #갱신날짜
-    holdingamount=models.IntegerField(default=0)
+    iteminfo = models.ForeignKey(Ingredient, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)  # 생성날짜
+    updated_at = models.DateTimeField(auto_now=True)  # 갱신날짜
+    holdingamount = models.IntegerField(default=0)
 
-    #get_fridge_item
+    def __str__(self):
+        return self.owner.username + ':' + self.iteminfo.ingredientName + '/' + str(self.holdingamount)
+
+    # get_fridge_item
     @staticmethod
     def get_fridge_item(owner):
-        user_fridge_item=FridgeItem.objects.filter(owner=owner)
-        fridge_item={}
+        user_fridge_item = FridgeItem.objects.filter(owner=owner)
+        fridge_item = {}
         fridge_item['cold'] = user_fridge_item.filter(iteminfo__storageMethod=1)
         fridge_item['frozen'] = user_fridge_item.filter(iteminfo__storageMethod=2)
         fridge_item['warm'] = user_fridge_item.filter(iteminfo__storageMethod=3)
         return fridge_item
+
+    @staticmethod
+    def use_fridge_item(owner, main_ingredients, sub_ingredients):
+        # user_fridge_items = FridgeItem.objects.filter(owner=owner)
+        if main_ingredients:
+            for code, quantity in main_ingredients.items():
+                user_fridge_item = get_object_or_404(FridgeItem, owner=owner, iteminfo__ingredientCode=code)
+                user_fridge_item.holdingamount -= quantity
+                user_fridge_item.save()
+        if sub_ingredients:
+            for code, quantity in sub_ingredients.items():
+                user_fridge_item = get_object_or_404(FridgeItem, owner=owner, iteminfo__ingredientCode=code)
+                user_fridge_item.holdingamount -= quantity
+                user_fridge_item.save()
+        return
+
 
 class Recommendation(models.Model):
     owner = models.ForeignKey(User, null=True)
@@ -116,6 +136,7 @@ class Recommendation(models.Model):
             intersection_cardinality = len(set.intersection(*[set(x), set(y)]))
             union_cardinality = len(set.union(*[set(x), set(y)]))
             return intersection_cardinality / float(union_cardinality)
+
         recommendation_list = []
         # temp_list = {}
         # has_ingredient = set(FridgeItem.objects.filter(owner=owner))
@@ -140,37 +161,42 @@ class Recommendation(models.Model):
 
         return recommendation_list
 
+    @staticmethod
     def has_what(owner, pk):
         menu_item = Menu.objects.get(pk=pk)
-        menu_main = set(int(k) for k in menu_item.main_ingredients.keys())
-        fridge_item = FridgeItem.objects.values_list('iteminfo', flat=True).filter(owner=owner)
-        has_fridge= set()
-        for k in fridge_item:
-            has_fridge.add(Ingredient.objects.get(pk=k).ingredientCode)
+        menu_main = menu_item.main_ingredients
+        menu_sub = menu_item.sub_ingredients
+        fridge_items = FridgeItem.objects.filter(owner=owner)
 
-        # 있는 재료의 재료코드
-        temp_yes_ingre = menu_main.intersection(has_fridge)
-        # 없는 재료의 재료코드
-        temp_no_ingre = menu_main.difference(has_fridge)
+        existing_main_ingredients = {}
+        missing_main_ingredients = {}
+        existing_sub_ingredients = {}
+        missing_sub_ingredients = {}
 
-        yes_ingre = {}
-        no_ingre = {}
+        for code, quantity in menu_main.items():
+            fridge_item = fridge_items.filter(iteminfo__ingredientCode=code, holdingamount__gte=quantity).first()
+            if fridge_item is not None:
+                existing_main_ingredients[Ingredient.objects.get(ingredientCode=code)] = quantity
+            else:
+                missing_main_ingredients[Ingredient.objects.get(ingredientCode=code)] = quantity
 
+        for code, quantity in menu_sub.items():
+            fridge_item = fridge_items.filter(iteminfo__ingredientCode=code, holdingamount__gte=quantity).first()
+            if fridge_item is not None:
+                existing_sub_ingredients[Ingredient.objects.get(ingredientCode=code)] = quantity
+            else:
+                missing_sub_ingredients[Ingredient.objects.get(ingredientCode=code)] = quantity
 
-        for k in temp_yes_ingre:
-            yes_ingre[Ingredient.objects.get(ingredientCode=k)] = menu_item.main_ingredients[str(k)]
+        existing_ingredients = {**existing_main_ingredients, **existing_sub_ingredients}
+        missing_ingredients = {**missing_main_ingredients, **missing_sub_ingredients}
 
-        for k in temp_no_ingre:
-            no_ingre[Ingredient.objects.get(ingredientCode=k)] = menu_item.main_ingredients[str(k)]
+        return existing_ingredients, missing_ingredients
 
-        return (yes_ingre, no_ingre)
 
 class ScrapList(models.Model):
     owner = models.ForeignKey(User, null=True)
     scrap_list = models.ManyToManyField(Menu, related_name='scrap_list', blank=True)
 
     def scrap_menu(self, owner, pk):
-        self.owner=owner
+        self.owner = owner
         self.scrap_list.add(Menu.objects.get(pk=pk))
-
-

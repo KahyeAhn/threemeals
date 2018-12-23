@@ -50,6 +50,9 @@
     <div>
     <form method="POST" action="{% url 'fridge:do_scrap' menu.id %}">{% csrf_token %}<input type="submit" value="스크랩&hearts;"></form>
     </div>
+    <div>
+    <form method="POST" action="{% url 'fridge:menu_detail' menu.id %}">{% csrf_token %}<input type="submit" value="먹었어요"></form>
+    </div>
 
 </div>
 {% endblock %}

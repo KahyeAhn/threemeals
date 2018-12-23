@@ -7,6 +7,8 @@ from django.views.generic.base import TemplateView
 
 from django.core.urlresolvers import reverse_lazy
 from django.http import JsonResponse
+from django.http.response import HttpResponseRedirect
+from django.urls import reverse
 from myblog.views import LoginRequiredMixin
 
 from fridge.models import *
@@ -14,12 +16,14 @@ from rest_framework import viewsets
 from fridge.serializers import IngredientSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
 
     def enforce_csrf(self, request):
         return  # To not perform the csrf check previously happening
+
 
 # ShoppingMemoController
 # shopping memo
@@ -40,6 +44,7 @@ class ShoppingList(View):
                                                'side': shopping_list['side'],
                                                'drink': shopping_list['drink'],
                                                })
+
     # delete_item
     def post(self, request, pk):
         template_name = 'fridge/shopping_memo.html'
@@ -55,15 +60,18 @@ class ShoppingList(View):
                                                'side': shopping_list['side'],
                                                'drink': shopping_list['drink'],
                                                })
+
+
 # ShoppingMemoController
 # class ShoppingItemDelete(LoginRequiredMixin, DeleteView):
 #     model = ShoppingItem
 #     success_url = reverse_lazy('fridge:shopping')
 
 
-#AddIngredientController_1
+# AddIngredientController_1
 class AddIngredient(TemplateView):
     template_name = 'fridge/addingredient_shopping.html'
+
     def get_ingre(self):
         ingredient_type = int(self.request.GET.get('type') or '0')
         if ingredient_type == 0:
@@ -73,11 +81,11 @@ class AddIngredient(TemplateView):
         context = {'ingredients': ingredients}
         return context
 
+
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     lookup_field = 'type'
-
 
     def get_queryset(self):
         ingredient_type = int(self.request.GET.get('type') or '0')
@@ -89,16 +97,18 @@ class IngredientViewSet(viewsets.ModelViewSet):
         queryset = ingredients
         return queryset
 
-#AddIngredientController_2
-#save ingredient in DB at shopping page
+
+# AddIngredientController_2
+# save ingredient in DB at shopping page
 class SaveItemShopping(APIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+
     def post(self, request, format=None):
         try:
             data = request.data['ingredient_ids']
             data = json.loads(data)
         except Exception as e:
-            print (e)
+            print(e)
             return JsonResponse({'code': 400, 'message': 'bad request, arguments error'})
         current_user = request.user
 
@@ -115,13 +125,15 @@ class SaveItemShopping(APIView):
                     return JsonResponse({'code': 500, "message": "error: database commit"})
         return JsonResponse({'code': 200, 'message': 'add success'})
 
+
 class RecommendationList(View):
     # get recommendation list
     def get(self, request):
         template_name = 'fridge/recom_list.html'
         owner = request.user
         recommendation_list = Recommendation.get_recommendation(owner)
-        return render(request, template_name, {'recom_list' : recommendation_list})
+        return render(request, template_name, {'recom_list': recommendation_list})
+
 
 class RecommendationDetail(View):
     # get recommendation recipe
@@ -130,9 +142,25 @@ class RecommendationDetail(View):
         recom_menu = get_object_or_404(Menu, pk=pk)
         yes_ingre, no_ingre = Recommendation.has_what(request.user, pk)
 
-        return render(request, template_name, {'menu':recom_menu,
-                                               'yes_ingre':yes_ingre,
-                                               'no_ingre':no_ingre})
+        return render(request, template_name, {'menu': recom_menu,
+                                               'yes_ingre': yes_ingre,
+                                               'no_ingre': no_ingre})
+
+    def post(self, request, pk):
+        template_name = 'fridge/recom_list.html'
+        recom_menu = get_object_or_404(Menu, pk=pk)
+        yes_ingre, no_ingre = Recommendation.has_what(request.user, pk)
+        if no_ingre:
+            return render(request, template_name, {'menu': recom_menu,
+                                                   'yes_ingre': yes_ingre,
+                                                   'no_ingre': no_ingre})
+        else:
+            main_ingredients = recom_menu.main_ingredients
+            sub_ingredients = recom_menu.sub_ingredients
+            FridgeItem.use_fridge_item(request.user, main_ingredients, sub_ingredients)
+            return HttpResponseRedirect(reverse('fridge:recommendation'))
+
+
 class Scrap(View):
     def get(self, request):
         template_name = 'fridge/scrap_list.html'
@@ -144,15 +172,19 @@ class Scrap(View):
         owner = request.user
         ScrapList.scrap_menu(self, owner, pk)
 
+
 class FridgeHomeView(TemplateView):
     template_name = 'fridge/recom_list.html'
+
 
 class ManageHomeView(TemplateView):
     template_name = 'fridge/manage.html'
 
+
 class ScrapHomeView(TemplateView):
     template_name = 'fridge/scrap_list.html'
 
-#menu detail
+
+# menu detail
 class MenuDetailView(TemplateView):
     template_name = 'fridge/menu_detail.html'
