@@ -2,17 +2,38 @@ div.wrapper{
     display: flex;
     flex: 1;
 }
+
 p.title{
-    font-size: 17px;
+    font-size: 25px;
     font-weight: bold;
+    margin : 0 auto;
 }
 
-p.menuDescription{
-    font-size: 17px;
+p.menuTitle{
+    font-size: 25px;
+    font-weight: bold;
+    border-width : 2px;
+    border-style : solid;
+    bodrer-color : black;
+    background : orange;
+    display : block;
+    margin : 0 auto;
 }
-div.recipe > img{
-    margin: auto;
+
+div#recipe > img{
+    display: block;
+    margin-left : auto;
+    margin-right : auto;
+    margin-top : 10px
 }
+
+div.menuDescription{
+   border-width : 2px;
+   border-style : solid;
+   border-color : black;
+   font-size : 17px
+}
+
 div.ingredients{
     display: flex;
     flex-direction: column;
