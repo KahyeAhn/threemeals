@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block title %}manage.html{% endblock %}
+
+{% load staticfiles %}
+{% block extrastyle %}{% static "fridge/fridge_manage.css" %}{% endblock %}
+
+{% block content %}
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<div id="content">
+    <div id="fridge-container">
+        <div id="coldItemContainer">
+            <p>냉장</p>
+            <ul>
+            {% for a in cold%}
+                <div class="temp">
+                    <!-- <span class="badge">Dlt</span> -->
+                    <form method="POST" action="{% url 'fridge:delete_fridgeitem' a.id %}">{% csrf_token %}<input type="submit" class= "badge"  value="&times"></form>
+                    <span class="badge" value="storageDate(a)"></span>
+                    <li class="fridgeitems" id="item-{{a.iteminfo.id}}"> {{a.iteminfo}} </li>
+
+                </div>
+            {% endfor %}
+            </ul>
+
+
+
+
+
+
+            <!-- <ul>
+            {% for a in cold%}
+                <li class="fridgeitems" id="item-{{a.iteminfo.id}}"> {{a.iteminfo}} </li>
+                <form method="POST" action="{% url 'fridge:delete_fridgeitem' a.id %}">{% csrf_token %}<input type="submit" class= "deletebuttons"  value="&times"></form>
+
+            {% endfor %}
+            </ul> -->
+
+        </div>
+        <div id="frozenItemContainer">
+            <p>냉동</p>
+            <ul>
+            {% for a in frozen%}
+                <li class="fridgeitems" id="item-{{a.iteminfo.id}}"> {{a.iteminfo}} </li>
+                <form method="POST" action="{% url 'fridge:delete_fridgeitem' a.id %}">{% csrf_token %}<input type="submit" class= "deletebuttons"  value="&times"></form>
+
+            {% endfor %}
+            </ul>
+        </div>
+        <div id="warmItemContainer">
+            <p>실온</p>
+            <ul>
+            {% for a in warm%}
+                <li class="fridgeitems" id="item-{{a.iteminfo.id}}"> {{a.iteminfo}} </li>
+                <form method="POST" action="{% url 'fridge:delete_fridgeitem' a.id %}">{% csrf_token %}<input type="submit" class= "deletebuttons" value="&times"></form>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div id="bottom">
+        <div id="chosen">
+
+        </div>
+        <div id="fridge-buttons">
+            <input type="button" id="add-ingredients" value="채워넣기" onclick="openNewWindow()">
+            <input type="button" id="save-fridgeitems" value="저장하기" onclick="saveFridgeItem()" >
+
+<!--    <button id="add-ingredients"><a href="{% url 'fridge:adding_manage' %}">&#43 채워넣기</a></button>
+ -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // function openChild()
+    // {
+    //     window.name="parentForm"
+    //     window.open("addingredient_manage.html", "childForm", "width=570, height=800, resizable=no, scrollbars=yes")
+
+    // }
+    let dict = {};
+
+    function ItemContainerTemplate(data) {
+        let html = "";
+        html += `<ul>`;
+        html += `<li class="fridgeitems" id="item-${data.tablename==="Ingredient"?data.id:data.iteminfo.id}">${data.tablename==="Ingredient"?data.ingredientName:data.iteminfo.ingredientName}</li>`;
+        html += `</ul>`;
+        return html;
+    }
+    function ItemContainerTemplates(datas) {
+        let html = "";
+        for (let i = 0; i < datas.length; i++) {
+            const $e = $(`#item-${datas[i].tablename==="Ingredient"?datas[i].id:datas[i].iteminfo.id}`);
+            if ($e.get(0)) {
+                $e.text($e.text()+" "+datas[i].updated_at);
+            } else {
+                html += ItemContainerTemplate(datas[i]);
+            }
+            // html += ItemContainerTemplate(datas[i]);
+        }
+        return html;
+    }
+    function setColdItemContainer(datas) {
+        $("#coldItemContainer").append(ItemContainerTemplates(datas));
+    }
+    function setFrozenItemContainer(datas) {
+        // $("#ingredients-container").children().remove();
+        $("#frozenItemContainer").append(ItemContainerTemplates(datas));
+    }
+    function setWarmItemContainer(datas) {
+        // $("#ingredients-container").children().remove();
+        $("#warmItemContainer").append(ItemContainerTemplates(datas));
+    }
+
+
+
+
+    function openNewWindow(){
+        var popUrl="/fridge/manage/add/";
+        var popOption="width=900, height=500, left=20, top=20, scrollbars=yes, resizeable=no, toolbar=no, menubar=no, location=no, directories=no,  status=no";
+        window.open(popUrl, "child", popOption);
+    }
+
+
+    function getSeperateFridgeItem(datas) {
+        // datas.filter(function(x) {
+        //     if (x.tablename === "Ingredient") {
+        //         return x.storageMethod === 1;
+        //     } else {
+        //         return x.storageMethod === 1;
+        //     }
+        // });
+        const ret = {
+            "cold": datas.filter(x => x.tablename === "Ingredient"? x.storageMethod === 1: x.iteminfo.storageMethod === 1),
+            "frozen": datas.filter(x => x.tablename === "Ingredient"? x.storageMethod === 2: x.iteminfo.storageMethod === 2),
+            "warm": datas.filter(x => x.tablename === "Ingredient"? x.storageMethod === 3: x.iteminfo.storageMethod === 3)
+        }
+        return ret;
+    }
+    function getReturnValue(data){
+        console.log(data);
+        // setColdItemContainer(data);
+        const datas = {"ingredient_ids": JSON.stringify(data)};
+        console.log(datas);
+        $.ajax({
+            url: "/fridge/api/ingredients/selected/manage/temp/",
+
+            data: datas,
+            type: "post"
+        })
+
+        .done(function(response) {
+            // console.log(response);
+            const update_fridge_item = response.data.update_fridge_item;
+            const new_fridge_item = response.data.new_fridge_item;
+            console.log(update_fridge_item);
+            console.log(new_fridge_item);
+
+            const update_datas = getSeperateFridgeItem(update_fridge_item);
+            const new_datas = getSeperateFridgeItem(new_fridge_item);
+
+            setColdItemContainer(update_datas.cold);
+            setFrozenItemContainer(update_datas.frozen);
+            setWarmItemContainer(update_datas.warm);
+            setColdItemContainer(new_datas.cold);
+            setFrozenItemContainer(new_datas.frozen);
+            setWarmItemContainer(new_datas.warm);
+        })
+        .fail(function(error) {
+            console.log("fail ajax");
+        })
+        .always(function() {
+            console.log("always");
+        });
+    }
+    function saveFridgeItem() {
+        // const $selected = $(".chosen-ingredient-item");
+        // const ids = [];
+        // for (let i = 0; i < $selected.length; i++) {
+        //     const id = Number($selected[i].id.split("-")[2]);
+        //     ids.push(id);
+        // }
+        // const data = {"ingredient_ids": JSON.stringify(ids)};
+
+
+        const $lis = $("#fridge-container li");
+        const ids = [];
+        console.log($lis);
+        for (let i = 0; i < $lis.length; i++) {
+            console.log(Number($lis[i].id.split("-")[1]));
+            const id = Number($lis[i].id.split("-")[1]);
+            // console.log($li.tablename==="Ingredient"?$li.id:$li.iteminfo.id.split("-")[2]);
+            //const id = Number($li.tablename==="Ingredient"?$li.id:$li.iteminfo.id);
+                // $lis[i].iteminfo.id.split("-")[2]);
+            ids.push(id);
+        }
+        const data = {"ingredient_ids": JSON.stringify(ids)};
+        console.log(data);
+
+
+
+        // for (let i = 0; i < $lis.length; i++) {
+        //     const $li = $lis[i];
+        //     $li.iteminfo.id
+        //     // const itemId = Number($li.id.split("-")[1]);
+        //     ids.push(itemId);
+        // }
+        // const data={"ingredient_ids": JSON.stringfy(ids)};
+
+
+        $.ajax({
+            url: "/fridge/api/ingredients/selected/manage/",
+            data: data,
+            type: "post"
+        })
+        .done(function(response) {
+           // window.location.href = "/fridge/manage";
+
+        })
+        .fail(function(error) {
+            console.log("error");
+
+        })
+        .always(function() {
+            console.log("always");
+
+        });
+    }
+
+    //유통기한리턴함수
+    function storageDate(data){
+        const $e=data.created
+
+
+    }
+
+    // function selectedItemTemplate(data) {
+    //     let html = "";
+    //     html += `<ul>`;
+    //     html += `<li class="chosen-item" id="chosen-item-${data.tablename==="Ingredient"?data.id:data.iteminfo.id}">${data.tablename==="Ingredient"?data.ingredientName:data.iteminfo.ingredientName}</li>`;
+    //     html += `</ul>`;
+    //     return html;
+    // }
+
+    // function addselectedFridgeItem(data){
+    //     const $e = $(`#chosen-item-${data.tablename==="Ingredient"?data.id:data.iteminfo.id}`);
+    //         if ($e.get(0) !== undefined) {
+    //             return;
+    //         }
+    //         $("#chosen").append(selectedItemTemplate(data));
+
+    // }
+
+    // function didClickFridgeItem() {
+    //     $(".fridgeitems").off("click");
+    //     $(".fridgeitems").on("click", function(e) {
+    //         const $this = $(this);
+    //         const $id = Number($this.get(0).id.split("-")[1]);
+
+    //         console.log($id);
+    //         const data = dict[$id];
+    //         addSelectedFridgeItem(data);
+    //         didClickSelectedIngredientItem();
+    //     });
+    // }
+    // function didClickSelectedItem() {
+    //     const $e = $(".chosen-item");
+    //     $e.off("click");
+    //     $e.on("click", function(e) {
+    //         const $this = $(this);
+    //         $this.remove();
+    //     });
+    // }
+    // //delete전에 페이지에 있는 아이템들 dict에 넣기
+    // function loadItems(){
+    //     const $lis = $("#fridge-container li");
+    //     for (let i = 0; i < $lis.length; i++) {
+    //         const $li = $lis[i];
+    //         const itemId = Number($li.id.split("-")[1]);
+    //         dict[itemId] = $li
+    //     }
+
+
+    // }
+    // function deleteFridgeItem() {
+    //     loadItems();
+    //     didClickFridgeItem();
+
+    // }
+
+    window.dict = dict;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // $('#add-ingredients').click(function(){
+    //     openNewWindow('addingredient_manage.html');
+    // })
+
+
+</script>
+
+
+{% endblock %}

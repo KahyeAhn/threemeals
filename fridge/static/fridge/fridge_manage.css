@@ -1,0 +1,128 @@
+tml {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+body {
+    margin:0; padding:0;
+    height: 100%;
+    width: 100  %;
+    display: flex;
+    flex-direction: column;
+}
+div#content{
+    height: 90%;
+    overflow:hidden;
+}
+
+div#fridge-container {
+    width: 100%;
+    height: 80%;
+    background-color:yellow;
+    overflow: hidden;
+}
+
+
+div#frozenItemContainer {
+    width: 50%;
+    height: 70%;
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+    float:left;
+    display: inline-block;
+}
+
+div#coldItemContainer {
+    width:49%;
+    height:70%;
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+    float:right;
+    display: inline-block;
+
+}
+
+div#warmItemContainer {
+    width:100%;
+    height:30%;
+    border-color:black;
+    border-width:1px;
+    border-style:solid;
+    display: block;
+    float:left;
+}
+div#bottom {
+    display: flex;
+    flex-direction: row;
+    height:15%;
+}
+div#chosen {
+            flex: 1;
+    -webkit-flex: 1;
+    height: 100%;
+    width:70%;
+    height:100%;
+    background-color:green;
+}
+div#fridge-buttons {
+    width: 300px;
+
+    padding-top: 20px;
+    float:right;
+    height: 80%%;
+    background-color: pink;
+}
+
+input {
+    float:right;
+    display: absolute;
+    top:30px;
+    left:0px;
+    height:30px;
+    display: table;
+    table-layout:fixed;
+    border-spacing: 40px 0px;
+    background: orange;
+    font-size: 15px;
+    vertical-align: middle;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+.fridgeitems{
+    display:inline-block;
+    width:50px;
+    height:50px;
+    margin:4px;
+    padding:1px;
+    float:left;
+    border-radius:50px;
+    border:1px solid;
+    font-size:10px;
+    text-align:center;
+    cursor: pointer;
+    background-color:white;
+    line-height:20px;
+    word-break: break-all;
+    font-weight:bold;
+}
+.temp {
+    position: relative;
+    padding-top:20px;
+    display:inline-block;
+}
+.badge{
+    position: absolute;
+    right:-50px;
+    top:10px;
+    background: red;
+    text-align: center;
+    border-radius: 30px 30px 30px 30px;
+    color:white;
+    font-size:20px;
+
+}

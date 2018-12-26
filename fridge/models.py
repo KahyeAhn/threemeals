@@ -28,6 +28,27 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.ingredientName
 
+    @staticmethod
+    def get_by_code(data):
+        return Ingredient.objects.get(ingredientCode=data)
+
+    @staticmethod
+    def get_by_storageMethod(data):
+        return Ingredient.objects.get(storageMethod=data)
+
+    def jsonify(self):
+        return {
+            "tablename": "Ingredient",
+            "id": self.id,
+            "ingredientName": self.ingredientName,
+            "type": self.type,
+            "category": self.category,
+            "storageMethod": self.storageMethod,
+            "unit": self.unit,
+            "defaultValue": self.defaultValue,
+            "ingredientCode": self.ingredientCode
+        }
+
 # 쇼핑 메모위한 리스트
 class ShoppingItem(models.Model):
     owner = models.ForeignKey(User, null=True)
@@ -113,6 +134,20 @@ class FridgeItem(models.Model):
         fridge_item['warm'] = user_fridge_item.filter(iteminfo__storageMethod=3)
         return fridge_item
 
+    def jsonify(self):
+        return {
+            "tablename": "FridgeItem",
+            "id": self.id,
+            "iteminfo": self.iteminfo.jsonify(),
+            "created_at": self.created_at.strftime("%Y-%m-%dT%H:%M:%S"),
+            "updated_at": self.updated_at.strftime("%Y-%m-%dT%H:%M:%S"),
+            "holdingamount": self.holdingamount
+        }
+    @staticmethod
+    def delete_item(pk):
+        delete_item = FridgeItem.objects.get(pk=pk)
+        delete_item.delete()
+        
     @staticmethod
     def use_fridge_item(owner, main_ingredients, sub_ingredients):
         # user_fridge_items = FridgeItem.objects.filter(owner=owner)

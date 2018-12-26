@@ -17,7 +17,7 @@
             <div class = "scrap-list-photo">
                 <li>
                     <img src="{{ scrap.scrapinfo.menu_thumbnail.url }}" /><br>
-                    <a href="{% url 'fridge:menu_detail' pk=scrap.pk %}">{{ scrap.scrapinfo.menu_name }}</a>
+                    <a href="{% url 'fridge:menu_detail' pk=scrap.scrapinfo.pk %}">{{ scrap.scrapinfo.menu_name }}</a>
                 </li>
                     <style type="text/css">
                         a:link {text-decoration: none; color: black;}

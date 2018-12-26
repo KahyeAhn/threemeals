@@ -71,6 +71,99 @@ class ShoppingList(View):
 #     success_url = reverse_lazy('fridge:shopping')
 
 
+# FridgeManage Controller (냉장고 관리 페이지)
+class FridgeManage(View):
+    # get_uer_fridge_items
+    def get(self, request):
+        template_name = 'fridge/fridge_manage.html'
+        owner = request.user
+        fridge_items = FridgeItem.get_fridge_item(owner)
+        return render(request, template_name, {'cold': fridge_items['cold'],
+                                               'frozen': fridge_items['frozen'],
+                                               'warm': fridge_items['warm']
+                                               })
+
+    # delete_fridge_item
+    def post(self, request, pk):
+        template_name = 'fridge/fridge_manage.html'
+        owner = request.user
+        fridge_items = FridgeItem.get_fridge_item(owner)
+        FridgeItem.delete_item(pk)
+        return render(request, template_name, {'cold': fridge_items['cold'],
+                                               'frozen': fridge_items['frozen'],
+                                               'warm': fridge_items['warm']
+                                               })
+
+
+# save_fridge_item in FridgeManage
+class ItemSaver(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+
+    def post(self, request, format=None):
+        print(request.data)
+        try:
+            data = request.data['ingredient_ids']
+            data = json.loads(data)
+            print(data)
+        except Exception as e:
+            print(e)
+            return JsonResponse({'code': 400, 'message': 'bad request, arguments error'})
+        current_user = request.user
+        print(data)
+
+        for ingredient_id in data:
+            ingredient = Ingredient.objects.filter(id=int(ingredient_id)).first()
+            print(ingredient)
+            new_fridge_item = FridgeItem(owner=current_user, iteminfo=ingredient)
+            new_fridge_item.save()
+
+        return JsonResponse({'code': 200, 'message': 'add success'})
+
+
+# add_fridge_item (unsaved) in FridgeManage
+class PostManager(APIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+
+    def post(self, request, format=None):
+        # return render(request, tempalte_name, {'cold':fridge_items['warm']})
+        ingredient_ids = json.loads(request.data['ingredient_ids'])
+        print(ingredient_ids)
+        ret = {}
+        for ingredient_id in ingredient_ids:
+            fridge_item = FridgeItem.objects.select_related("iteminfo").filter(
+                iteminfo__ingredientCode=int(ingredient_id), owner=request.user)
+            if fridge_item.first():
+                fridge_item = fridge_item.first()
+                if 'update_fridge_item' in ret:
+                    ret['update_fridge_item'].append({
+                        fridge_item.jsonify()
+                    })
+                else:
+                    ret['update_fridge_item'] = [fridge_item.jsonify()]
+            else:
+                ingredient = Ingredient.objects.get(ingredientCode=int(ingredient_id))
+                if 'new_fridge_item' in ret:
+                    ret['new_fridge_item'].append(ingredient.jsonify())
+                else:
+                    ret['new_fridge_item'] = [ingredient.jsonify()]
+
+        return JsonResponse({'code': 200, 'message': 'get success', 'data': ret})
+
+
+# AddIngredient in FridgeManage page (냉장고 관리의 재료추가 페이지 )
+class AddIngredientManage(TemplateView):
+    template_name = 'fridge/addingredient_manage.html'
+
+    def get_ingre(self):
+        ingredient_type = int(self.request.GET.get('type') or '0')
+        if ingredient_type == 0:
+            ingredients = Ingredient.objects.all()
+        else:
+            ingredients = Ingredient.objects.filter(type=ingredient_type)
+        context = {'ingredients': ingredients}
+        return context
+
+
 # AddIngredientController_1
 class AddIngredient(TemplateView):
     template_name = 'fridge/addingredient_shopping.html'

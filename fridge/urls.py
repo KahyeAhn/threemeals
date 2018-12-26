@@ -13,12 +13,18 @@ router.register(r'ingredients', IngredientViewSet)
 # router.register(r'ingredients/selected', AddIngredientItem.as_view(), basename='ingredients')
 
 urlpatterns=[
+
+
+
+
     url(r'^$', Home.as_view(), name='home'),
-    url(r'^manage/$', Manage.as_view(), name='manage'),
-    url(r'^manage/add/$', AddIngredient.as_view(), name="adding_manage"),
+    url(r'^manage/$',FridgeManage.as_view(), name='manage'),
+    url(r'^manage/add/$', AddIngredientManage.as_view(), name="adding_manage"),
     url(r'^shopping/add/$', AddIngredient.as_view(), name="adding_shopping"),
     url(r'^api/ingredients/selected/shopping/$', SaveItemShopping.as_view(), name="saveitem_shopping"),
-    
+    url(r'^api/ingredients/selected/manage/$', ItemSaver.as_view(), name="saveitem_manage"),
+    url(r'^api/ingredients/selected/manage/temp/$', PostManager.as_view(), name="additem_manage"),
+
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
@@ -31,5 +37,6 @@ urlpatterns=[
 
     url(r'^shopping/$', ShoppingList.as_view(), name="shopping"),
     url(r'^(?P<pk>[0-9]+)/delete/$', ShoppingList.as_view(), name="delete"),
+    url(r'^manage/(?P<pk>[0-9]+)/delete/$', FridgeManage.as_view(), name="delete_fridgeitem"),
 
 ]
