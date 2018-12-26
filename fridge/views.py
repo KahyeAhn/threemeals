@@ -35,6 +35,7 @@ class ShoppingList(View):
     def get(self, request):
         template_name = 'fridge/shopping_memo.html'
         owner = request.user
+        # 쇼핑 리스트 가져오기
         shopping_list = ShoppingItem.get_shopping_item(owner)
         return render(request, template_name, {'meat': shopping_list['meat'],
                                                'seafood': shopping_list['seafood'],
@@ -51,6 +52,7 @@ class ShoppingList(View):
         template_name = 'fridge/shopping_memo.html'
         owner = request.user
         shopping_list = ShoppingItem.get_shopping_item(owner)
+        # 쇼핑 아이템 삭제하기
         ShoppingItem.delete_item(pk)
         return render(request, template_name, {'meat': shopping_list['meat'],
                                                'seafood': shopping_list['seafood'],
@@ -165,9 +167,12 @@ class RecommendationDetail(View):
 class Scrap(View):
 
     def post(self, request, pk):
-        owner = request.user
-        ScrapList.add_scrap(owner, pk)
-        return HttpResponseRedirect(self.request.path_info)
+        template_name = 'fridge/menu_detail'
+        form = ScrapList(request.POST)
+        form.owner = request.user
+        form.pk = pk
+        ScrapList.add_scrap(form)
+        return render(request, template_name, {'form':form})
 
     def get(self, request):
         template_name = 'fridge/scrap_list.html'

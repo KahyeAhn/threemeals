@@ -15,6 +15,7 @@ from math import *
 
 from datetime import date
 
+# 재료 엔티티
 class Ingredient(models.Model):
     ingredientName = models.CharField(max_length=50)
     type = models.IntegerField(default=0)
@@ -27,15 +28,17 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.ingredientName
 
-
+# 쇼핑 메모위한 리스트
 class ShoppingItem(models.Model):
     owner = models.ForeignKey(User, null=True)
     iteminfo = models.ForeignKey(Ingredient, null=True)
 
+    # 쇼핑 메모 삭제
     def delete_item(pk):
         delete_item = ShoppingItem.objects.get(pk=pk)
         delete_item.delete()
 
+    # 쇼핑 메모 리스트
     # get_shopping_item
     @staticmethod
     def get_shopping_item(owner):
@@ -52,13 +55,14 @@ class ShoppingItem(models.Model):
         return shopping_list
 
 
+# 양념
 class Sauce(models.Model):
     sauceName = models.CharField(max_length=50)
 
     def __str__(self):
         return self.sauceName
 
-
+# 레시피(설명 들어간 부분)
 class Recipe(models.Model):
     sauce = models.ManyToManyField(Sauce, related_name='sauce')
     description = models.TextField()
@@ -70,7 +74,7 @@ class Recipe(models.Model):
     class Meta:
         verbose_name = 'Recipe'
 
-
+# 레시피 위한 메뉴(메뉴이름 들어간 부분)
 class Menu(models.Model):
     menu_name = models.CharField(max_length=50)
     menu_image = models.ImageField(verbose_name='menu_image', upload_to='images/menu', blank=True)
@@ -124,10 +128,11 @@ class FridgeItem(models.Model):
                 user_fridge_item.save()
         return
 
-
+# 추천
 class Recommendation(models.Model):
     owner = models.ForeignKey(User, null=True)
 
+    # 추천 목록 얻기
     @staticmethod
     def get_recommendation(owner):
 
@@ -160,6 +165,7 @@ class Recommendation(models.Model):
 
         return recommendation_list
 
+    # 클릭한 해당 메뉴의 재료와 유저가 가지고 있는 재료 비교, 있는재료 없는 재료 리턴
     @staticmethod
     def has_what(owner, pk):
         menu_item = Menu.objects.get(pk=pk)
@@ -192,24 +198,25 @@ class Recommendation(models.Model):
         return existing_ingredients, missing_ingredients
 
 
+# 스크랩 리스트
 class ScrapList(models.Model):
     owner = models.ForeignKey(User, null=True)
     scrapinfo = models.ForeignKey(Menu, null=True)
 
+    # 스크랩 리스트 얻기
     # get scraplist
     @staticmethod
     def scrap_menu(owner):
         user_scrap_list = ScrapList.objects.filter(owner=owner)
         return user_scrap_list
 
+    # 스크랩하기 버튼, 스크랩 하기!
     # add scraplist
     @staticmethod
-    def add_scrap(owner, pk):
-        owner = User.objects.get(pk=owner.pk)
-        scrapinfo = Menu.objects.get(pk=pk)
-        obj, created = ScrapList.objects.update_or_create(owner=owner, scrapinfo=scrapinfo)
-        obj.save()
+    def add_scrap(form):
+        form.save()
 
+    # 스크랩한 아이템 삭제하기
     def delete_scrap_item(pk):
         delete_scrap_item = ScrapList.objects.get(pk=pk)
         delete_scrap_item.delete()
