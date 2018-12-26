@@ -141,27 +141,31 @@ class Recommendation(models.Model):
             union_cardinality = len(set.union(*[set(x), set(y)]))
             return intersection_cardinality / float(union_cardinality)
 
-        recommendation_list = []
-        # temp_list = {}
-        # has_ingredient = set(FridgeItem.objects.filter(owner=owner))
-        #
-        # if(len(has_ingredient)==0):
-        #     return []
-        #
-        # # 추천 로직 넣기
-        all_menu = Menu.objects.filter()
-        #
-        # for i in all_menu:
-        #     menu_main = set(int(k) for k in i.main_ingredients.keys())
-        #     jaccard_main = jaccard_similarity(has_ingredient, menu_main)
-        #     temp_list[i] = jaccard_main
-        #
-        # temp_list = sorted(temp_list.items(), key=lambda x: x[1])
-        #
-        # recommendation_list = temp_list
+        recommendation_list = [0, 0, 0, 0, 0, 0]
+        temp_list = {}
+        has_ingredient_list = FridgeItem.objects.filter(owner=owner)
+        has_ingredient= set()
+        for ingre in has_ingredient_list:
+            has_ingredient.add(ingre.iteminfo.ingredientCode)
 
-        for i in all_menu:
-            recommendation_list.append(i)
+        if(len(has_ingredient)==0):
+            return recommendation_list
+
+        # 추천 로직 넣기
+        all_menu = Menu.objects.filter()
+
+        for menu in all_menu:
+            menu_main = set(int(k) for k in menu.main_ingredients.keys())
+            jaccard_main = jaccard_similarity(has_ingredient, menu_main)
+            temp_list[menu] = jaccard_main
+
+        temp_list = sorted(temp_list.items(), key=lambda x: x[1], reverse=True)
+
+        for count in range(6):
+            if temp_list[count][1] == 0.0:
+                continue
+            else:
+                recommendation_list[count] = temp_list[count][0]
 
         return recommendation_list
 
@@ -213,8 +217,11 @@ class ScrapList(models.Model):
     # 스크랩하기 버튼, 스크랩 하기!
     # add scraplist
     @staticmethod
-    def add_scrap(form):
-        form.save()
+    def add_scrap(owner, pk):
+        scrap_menu = Menu.objects.get(pk=pk)
+        scrap_item = ScrapList.objects.create(owner=owner, scrapinfo=scrap_menu)
+        scrap_item.save()
+
 
     # 스크랩한 아이템 삭제하기
     def delete_scrap_item(pk):

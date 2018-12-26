@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}scrap_list.html{% endblock %}
+{% block title %}My 스크랩{% endblock %}
 
 {% load staticfiles %}
 {% block extrastyle %}{% static "fridge/scrap_list.css" %}{% endblock %}
@@ -8,8 +8,8 @@
 {% block content %}
 <div id="content">
     <p>
-        <h4>MY 스크랩 레시피</h4>
-        <span>내가 찜!한 레시피를 확인하세요</span>
+        <span class="scraplist">MY 스크랩 레시피</span><br>
+        <span class="scraplist">내가 찜!한 레시피를 확인하세요</span>
     </p>
     <div class = "scrap-list">
         <ul>
@@ -25,7 +25,7 @@
                         a:active {text-decoration: none; color: grey;}
                         a:hover {text-decoration: underline; color: red;}
                     </style>
-                <form>{% csrf_token %}<input type="submit" value="&times"></form>
+                <td><form method="POST" action="{% url 'fridge:scrap_delete' scrap.id %}">{% csrf_token %}<input type="submit" value="&times"></form></td>
             </div>
             {% endfor %}
         </ul>

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}recom_list.html{% endblock %}
+{% block title %}꺼내먹기{% endblock %}
 
 {% load staticfiles %}
 {% block extrastyle %}{% static "fridge/recom_list.css" %}{% endblock %}
@@ -10,6 +10,11 @@
     <div id="recipe_recom">
         <ul>
             {% for recom in recom_list %}
+            {% if recom == 0 %}
+            <div class="recipe_recom_photo">
+                <h2>추천없음</h2>
+            </div>
+            {% else %}
                 <div class = "recipe_recom_photo">
                     {% if recom.menu_thumbnail %}
                         <img src="{{ recom.menu_thumbnail.url }}" />
@@ -22,6 +27,7 @@
                                 a:hover {text-decoration: underline; color: red;}
                             </style>
                 </div>
+            {% endif %}
                 {% endfor %}
             </ul>
     </div>

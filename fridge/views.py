@@ -165,14 +165,9 @@ class RecommendationDetail(View):
 
 
 class Scrap(View):
-
     def post(self, request, pk):
-        template_name = 'fridge/menu_detail'
-        form = ScrapList(request.POST)
-        form.owner = request.user
-        form.pk = pk
-        ScrapList.add_scrap(form)
-        return render(request, template_name, {'form':form})
+        ScrapList.add_scrap(request.user, pk)
+        return HttpResponseRedirect(reverse('fridge:menu_detail', args=(pk,)))
 
     def get(self, request):
         template_name = 'fridge/scrap_list.html'
@@ -180,21 +175,18 @@ class Scrap(View):
         scrap_list = ScrapList.scrap_menu(owner)
         return render(request, template_name, {'scraps': scrap_list})
 
+class ScrapDetail(View):
+        def post(self, request, pk):
+            template_name = 'fridge/scrap_list.html'
+            owner = request.user
+            # 쇼핑 아이템 삭제하기
+            ScrapList.delete_scrap_item(pk)
+            scrap_list = ScrapList.scrap_menu(owner)
+            return render(request, template_name, {'scraps': scrap_list})
 
+class Home(TemplateView):
+    template_name = 'home.html'
 
-
-class FridgeHomeView(TemplateView):
-    template_name = 'fridge/recom_list.html'
-
-
-class ManageHomeView(TemplateView):
+class Manage(TemplateView):
     template_name = 'fridge/manage.html'
 
-
-class ScrapHomeView(TemplateView):
-    template_name = 'fridge/scrap_list.html'
-
-
-# menu detail
-class MenuDetailView(TemplateView):
-    template_name = 'fridge/menu_detail.html'

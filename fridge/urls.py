@@ -13,8 +13,8 @@ router.register(r'ingredients', IngredientViewSet)
 # router.register(r'ingredients/selected', AddIngredientItem.as_view(), basename='ingredients')
 
 urlpatterns=[
-    url(r'^$', FridgeHomeView.as_view(), name='home'),
-    url(r'^manage/$', ManageHomeView.as_view(), name='manage'),
+    url(r'^$', Home.as_view(), name='home'),
+    url(r'^manage/$', Manage.as_view(), name='manage'),
     url(r'^manage/add/$', AddIngredient.as_view(), name="adding_manage"),
     url(r'^shopping/add/$', AddIngredient.as_view(), name="adding_shopping"),
     url(r'^api/ingredients/selected/shopping/$', SaveItemShopping.as_view(), name="saveitem_shopping"),
@@ -27,6 +27,7 @@ urlpatterns=[
 
     url(r'^recommedation/$', RecommendationList.as_view(), name='recommendation'),
     url(r'^(?P<pk>[0-9]+)/menu_detail/$', RecommendationDetail.as_view(), name='menu_detail'),
+    url(r'^(?P<pk>[0-9]+)/scrap_delete/$', ScrapDetail.as_view(), name="scrap_delete"),
 
     url(r'^shopping/$', ShoppingList.as_view(), name="shopping"),
     url(r'^(?P<pk>[0-9]+)/delete/$', ShoppingList.as_view(), name="delete"),

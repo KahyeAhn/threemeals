@@ -8,7 +8,7 @@ span#addmemo{
     table-layout:fixed;
     border-spacing: 40px 0px;
     background: orange;
-    font-size: 15px;
+    font-size: 20px;
     vertical-align: middle;
     border-radius: 12px;
     text-align: center;
@@ -16,6 +16,11 @@ span#addmemo{
     text-decoration: none;
 }
 tr.type{
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold;
+}
+
+span.basketlist{
+    font-size:16px;
+    font-weight: bolder;
 }

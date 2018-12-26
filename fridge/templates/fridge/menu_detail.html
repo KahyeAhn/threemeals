@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}ingredient_list.html{% endblock %}
+{% block title %}레시피{% endblock %}
 
 {% load staticfiles %}
 {% block extrastyle %}{% static "fridge/menu_detail.css" %}{% endblock %}
@@ -49,27 +49,12 @@
                 </ul>
             </div>
             <div class = "scrap">
-                <form method="POST" action="{% url 'fridge:do_scrap' menu.id %}">{% csrf_token %}<input type="submit" style="font-size:150px;" value="스크랩&hearts;"></form>
+                <form method="POST" action="{% url 'fridge:do_scrap' menu.id %}">{% csrf_token %}<input id="scrapbutton" type="submit" style="font-size:150px;" value="스크랩&hearts;"></form>
+            </div>
+            <div>
+            <form method="POST" action="{% url 'fridge:menu_detail' menu.id %}">{% csrf_token %}<input type="submit" value="먹었어요"></form>
             </div>
         </div>
-    </div>
-
-    <div id="no_ingredients">
-        <h4>없는 재료</h4> <br>
-       <ul>
-            {% for ingre_code, ingre_weight in no_ingre.items %}
-           <li>{{ ingre_code.ingredientName }}<br>
-               {{ ingre_weight }}{{ ingre_code.unit }}
-           </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div>
-    <form method="POST" action="{% url 'fridge:do_scrap' menu.id %}">{% csrf_token %}<input type="submit" value="스크랩&hearts;"></form>
-    </div>
-    <div>
-    <form method="POST" action="{% url 'fridge:menu_detail' menu.id %}">{% csrf_token %}<input type="submit" value="먹었어요"></form>
     </div>
 
 </div>
