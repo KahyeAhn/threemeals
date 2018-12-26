@@ -15,7 +15,7 @@ div#header{
 
 div#menu{
     position: absolute;
-    top:30px;
+    top:65px;
     left:0px;
     height:30px;
     width: 100%;
@@ -26,9 +26,10 @@ div#menu{
     font-size: 15px;
 }
 
+
 div#content{
     position: absolute;
-    top:70px;
+    top:100px;
     left:50px;
     right:50px;
 }
@@ -50,6 +51,7 @@ div#content{
     color: #ffc;
     font-weight: normal;
     font-size: 12px;
+
 }
 
 div#menu a:link, div#menu a:visited {
@@ -64,6 +66,8 @@ div#menu >li {
     text-align: center;
     font-weight: bold;
     text-decoration:none;
+    float : right;
+    width : 100px
 }
 
 table {
