@@ -1,8 +1,7 @@
 div#content_home{
     position: absolute;
-    top: 80px;
-    left: 110px;
-    right: 110px;
+    top: 95px;
+    width : 100%
 }
 
 div#homeimg{
