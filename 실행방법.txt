@@ -1,0 +1,16 @@
+Django==1.11.17
+django-appconf==1.0.2
+django-filter==2.0.0
+django-imagekit==4.0.2
+djangorestframework==3.9.0
+Markdown==3.0.1
+pilkit==2.0
+Pillow==5.3.0
+pytz==2018.7
+six==1.12.0
+
+위 Packages 필요
+1. Pycharm 실행
+2. Terminal 창에 pip install -r requirements.txt 입력
+3. 위 Packages 설치 완료
+4. Terminal 창에 python manage.py runserver 입력
