@@ -170,7 +170,10 @@ class Recommendation(models.Model):
         return recommendation_list
 
     # 클릭한 해당 메뉴의 재료와 유저가 가지고 있는 재료 비교, 있는재료 없는 재료 리턴
+<<<<<<< Updated upstream
     @staticmethod
+=======
+>>>>>>> Stashed changes
     def has_what(owner, pk):
         menu_item = Menu.objects.get(pk=pk)
         menu_main = menu_item.main_ingredients
@@ -217,11 +220,16 @@ class ScrapList(models.Model):
     # 스크랩하기 버튼, 스크랩 하기!
     # add scraplist
     @staticmethod
+<<<<<<< Updated upstream
     def add_scrap(owner, pk):
         scrap_menu = Menu.objects.get(pk=pk)
         scrap_item = ScrapList.objects.create(owner=owner, scrapinfo=scrap_menu)
         scrap_item.save()
 
+=======
+    def add_scrap(form):
+        form.save()
+>>>>>>> Stashed changes
 
     # 스크랩한 아이템 삭제하기
     def delete_scrap_item(pk):
